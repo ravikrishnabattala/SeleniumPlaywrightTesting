@@ -1,10 +1,9 @@
 package org.example;
 
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
-import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Tags;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -23,38 +22,15 @@ public class SeleniumTest {
     private static final Logger logger = LoggerFactory.getLogger(SeleniumTest.class);
     private static WebDriver driver;
 
-    @BeforeAll
-    public static void intializeBrowsers(){
-        HooksTest.initiateBrowsers();
-    }
-
-    @BeforeEach
-    public void setUp(TestInfo testInfo) {
-        new HooksTest().setUp(testInfo);
-    }
-
-    @Before
-    public void setUpDuplicate(Scenario scenario) {
-        TestInfo testInfo = null;
-        new HooksTest().setUp(testInfo);
-    }
-
-    @AfterEach
-    @After
-    public void allClear(){
-        new HooksTest().afterExecute();
-    }
-
-    @AfterAll
-    public static void tearDown(){
-        HooksTest.shutDownBrowsers();
+    public SeleniumTest() {
+        System.out.println("Selenium constructor...");
+        driver = HooksTest.getDriver();
     }
 
     @Test
     @Tags(value = {@Tag("1234"), @Tag("5678"), @Tag("9101")})
     @Given("Run selenium google test case")
     public void function() throws InterruptedException {
-        driver = HooksTest.getDriver();
         driver.get("https://www.google.com");
         logger.info("error becuase of wait");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10)); // Wait for up to 10 seconds
@@ -73,7 +49,6 @@ public class SeleniumTest {
     @Tags(value = {@Tag("12345"), @Tag("5678"), @Tag("9101")})
     @Given("Run selenium facebook test case")
     public void function1() throws InterruptedException {
-        driver = HooksTest.getDriver();
         driver.get("https://www.facebook.com");
         logger.info("error becuase of wait");
         String str = driver.getTitle();

@@ -5,6 +5,6 @@ import io.cucumber.java.en.Given;
 public class StepDefinitions {
 
     public void hello(){
-        System.out.println("ravi krishna");
+
     }
 }

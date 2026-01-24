@@ -1,10 +1,10 @@
 package org.example;
 
 import com.microsoft.playwright.*;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestInfo;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
@@ -17,7 +17,6 @@ import org.slf4j.MDC;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,9 +30,30 @@ public class HooksTest {
     private static WebDriver driver;
     private static final Logger logger = LoggerFactory.getLogger(HooksTest.class);
 
-
     @BeforeAll
     @io.cucumber.java.BeforeAll
+    public static void beforeAllHook() {
+        System.out.println("Junit & Cucumber Before All run...");
+    }
+
+    @BeforeEach
+    public void junitBeforeHook() {
+        System.out.println("Junit before run...");
+        driver = getDriver();
+        initiateBrowsers();
+        TestInfo testInfo = null;
+        setUp(testInfo);
+    }
+
+    @Before
+    public void cucumberBeforeHook(Scenario scenario) {
+        System.out.println("Cucumber before run...");
+        driver = getDriver();
+        initiateBrowsers();
+        TestInfo testInfo = null;
+        setUp(testInfo);
+    }
+
     public static void initiateBrowsers() {
         logger.info("Initializing Playwright...");
         try {
@@ -61,7 +81,6 @@ public class HooksTest {
         }
     }
 
-    @BeforeEach
     public void setUp(TestInfo testInfo) {
         logger.info("Initializing Selenium WebDriver...");
         if (driver != null) {
@@ -79,7 +98,7 @@ public class HooksTest {
             driver = new ChromeDriver(options);
             logger.info("Selenium WebDriver started. Window Handle: {}", driver.getWindowHandle());
             ((JavascriptExecutor) driver).executeScript("window.open();");
-            driver.switchTo().window(new ArrayList<>(driver.getWindowHandles()).get(1));
+//            driver.switchTo().window(new ArrayList<>(driver.getWindowHandles()).get(1));
 //        ((JavascriptExecutor) driver).executeScript("window.open('', '_blank', 'width=800,height=600');");
             if (testInfo != null && !testInfo.getTags().isEmpty()) {
                 MDC.put("testCaseId", testInfo.getTags().iterator().next());
@@ -110,8 +129,14 @@ public class HooksTest {
         return browser;
     }
 
+    public Playwright getPlaywright() {
+        return playwright;
+    }
+
     @AfterEach
-    public void afterExecute() {
+    @After
+    public void afterExecuteHook() {
+        System.out.println("Cucumber & Junit After each run...");
         MDC.clear();
         if (driver != null) {
             driver.quit();
@@ -120,8 +145,10 @@ public class HooksTest {
         }
     }
 
+    @AfterAll
     @io.cucumber.java.AfterAll
-    public static void shutDownBrowsers() {
+    public static void shutDownBrowsersHook() {
+        System.out.println("Cucumber & Junit After all run...");
         logger.info("Web Driver Removed");
         page.close();
         context.tracing().stop(new Tracing.StopOptions()
