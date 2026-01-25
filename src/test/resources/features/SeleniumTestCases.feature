@@ -1,13 +1,14 @@
 Feature: Run testcases of Selenium
 
-  Background: background
+  Background:
 
   Scenario Outline: scenario outline
+    Given Prerequisites to run test cases '<testCaseId>'
     Given Run selenium google test case
 
     Examples:
-      | a |
-      | 1 |
+      | testCaseId |
+      | 1234567    |
 
   Scenario: scenario
     Given Run selenium facebook test case

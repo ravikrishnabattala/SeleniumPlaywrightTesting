@@ -49,7 +49,7 @@ public class HooksTest {
     public void cucumberBeforeHook(Scenario scenario) {
         System.out.println("Cucumber before run...");
         driver = getDriver();
-        initiateBrowsers();
+//        initiateBrowsers();
         TestInfo testInfo = null;
         setUp(testInfo);
     }
@@ -97,7 +97,7 @@ public class HooksTest {
             options.setScriptTimeout(duration);
             driver = new ChromeDriver(options);
             logger.info("Selenium WebDriver started. Window Handle: {}", driver.getWindowHandle());
-            ((JavascriptExecutor) driver).executeScript("window.open();");
+//            ((JavascriptExecutor) driver).executeScript("window.open();");
 //            driver.switchTo().window(new ArrayList<>(driver.getWindowHandles()).get(1));
 //        ((JavascriptExecutor) driver).executeScript("window.open('', '_blank', 'width=800,height=600');");
             if (testInfo != null && !testInfo.getTags().isEmpty()) {
@@ -136,7 +136,7 @@ public class HooksTest {
     @AfterEach
     @After
     public void afterExecuteHook() {
-        System.out.println("Cucumber & Junit After each run...");
+        System.out.println("Cucumber & Junit After each run... "+MDC.get("testCaseId"));
         MDC.clear();
         if (driver != null) {
             driver.quit();
