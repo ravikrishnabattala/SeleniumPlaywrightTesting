@@ -38,10 +38,11 @@ public class SeleniumTest {
         MDC.put("testCaseId", testCaseId);
     }
 
-    public void instagramLogin() throws IOException {
+    @Given("Login to Instagram userId = {string} and password = {string}")
+    public void instagramLogin(String userId,String secret) throws IOException {
 
-        String userName = System.getProperty("username");
-        String password = System.getProperty("password");
+        String userName =  System.getProperty("username",userId);
+        String password = System.getProperty("password",secret);
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30)); // Wait for up to 15 seconds
 
         driver.get("https://www.instagram.com/accounts/login/?hl=en");
@@ -98,8 +99,21 @@ public class SeleniumTest {
                 )
         );
         notNow.click();
+        waiting(5);
 
-       waiting(5);
+        By searchInput = By.xpath("//input[@name='searchInput' and @type='text' and @placeholder='Search']");
+
+        String value = "";
+        for (int i = 0; i < userId.length(); i++) {
+            WebElement searchBox = wait.until(
+                    ExpectedConditions.presenceOfElementLocated(searchInput)
+            );
+            value += userId.charAt(i);
+            js.executeScript(
+                    "arguments[0].value = arguments[1];" +
+                            "arguments[0].dispatchEvent(new Event('input', { bubbles: true }));",
+                    searchBox, value);
+        }
 
         // 1. Locate username text
         WebElement nameSpan = wait.until(

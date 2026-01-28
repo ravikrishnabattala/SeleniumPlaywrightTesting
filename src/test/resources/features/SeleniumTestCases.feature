@@ -7,8 +7,8 @@ Feature: Run testcases of Selenium
     Given Send message '<message>' to user '<userId>' on instagram
 
     Examples:
-      | testCaseId | message | userId              |
-      | 1234567    | Hii     | memes matrame pampu |
+      | testCaseId | message         | userId     |
+      | 1234567    | Hii buddies.... | Zoozubieee |
 
-  Scenario: scenario
-    Given Run selenium facebook test case
+  Scenario: Login
+    Given Login to Instagram userId = 'userId' and password = 'password'
