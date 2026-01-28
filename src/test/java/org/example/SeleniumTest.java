@@ -19,10 +19,14 @@ public class SeleniumTest {
 
     private static final Logger logger = LoggerFactory.getLogger(SeleniumTest.class);
     private static WebDriver driver;
+    WebDriverWait wait;// Wait for up to 15 seconds
+    JavascriptExecutor js;
 
     public SeleniumTest() {
         System.out.println("Selenium constructor...");
         driver = HooksTest.getDriver();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        js = (JavascriptExecutor) driver;
     }
 
     public void waiting(int seconds) throws InterruptedException {
@@ -39,11 +43,10 @@ public class SeleniumTest {
     }
 
     @Given("Login to Instagram userId = {string} and password = {string}")
-    public void instagramLogin(String userId,String secret) throws IOException {
+    public void instagramLogin(String userId,String secret) throws IOException, InterruptedException {
 
         String userName =  System.getProperty("username",userId);
         String password = System.getProperty("password",secret);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30)); // Wait for up to 15 seconds
 
         driver.get("https://www.instagram.com/accounts/login/?hl=en");
 
@@ -53,6 +56,8 @@ public class SeleniumTest {
 
         WebElement inputPassword = driver.findElement(By.xpath("//input[@name='pass']"));
         inputPassword.sendKeys(password + Keys.ENTER);
+
+        waiting(30);
 
         By notNowBtn = By.xpath("//div[@role='button' and .//text()[contains(.,'Not now')]]");
         wait.until(ExpectedConditions.elementToBeClickable(notNowBtn)).click();
@@ -65,11 +70,8 @@ public class SeleniumTest {
         oos.close();
     }
 
-    @Given("Send message {string} to user {string} on instagram")
-    public void instagramSendingMessages(String message, String userId) throws InterruptedException, IOException, ClassNotFoundException {
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30)); // Wait for up to 15 seconds
-        JavascriptExecutor js = (JavascriptExecutor) driver;
+    @Given("Login to Instagram")
+    public  void instagramLogin() throws InterruptedException, IOException, ClassNotFoundException {
 
         driver.get("https://www.instagram.com/");
         Thread.sleep(3000);
@@ -83,6 +85,9 @@ public class SeleniumTest {
             driver.manage().addCookie(cookie);
         }
         driver.navigate().refresh();
+    }
+    @Given("Send message {string} to user {string} on instagram")
+    public void instagramSendingMessages(String message, String userId) throws InterruptedException, IOException, ClassNotFoundException {
 
         By svg = By.xpath("//*[name()='svg' and @aria-label='Messages']");
         WebElement button = wait.until(ExpectedConditions.presenceOfElementLocated(svg))

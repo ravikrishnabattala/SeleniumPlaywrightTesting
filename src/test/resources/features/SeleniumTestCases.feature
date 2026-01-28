@@ -4,7 +4,8 @@ Feature: Run testcases of Selenium
 
   Scenario Outline: scenario outline
     Given Prerequisites to run test cases '<testCaseId>'
-    Given Send message '<message>' to user '<userId>' on instagram
+    Given Login to Instagram
+    Then Send message '<message>' to user '<userId>' on instagram
 
     Examples:
       | testCaseId | message         | userId     |
