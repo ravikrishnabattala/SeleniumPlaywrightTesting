@@ -4,11 +4,11 @@ Feature: Run testcases of Selenium
 
   Scenario Outline: scenario outline
     Given Prerequisites to run test cases '<testCaseId>'
-    Given Run selenium google test case
+    Given Send message '<message>' to user '<userId>' on instagram
 
     Examples:
-      | testCaseId |
-      | 1234567    |
+      | testCaseId | message | userId              |
+      | 1234567    | Hii     | memes matrame pampu |
 
   Scenario: scenario
     Given Run selenium facebook test case

@@ -1,13 +1,9 @@
 package org.example;
 
 import io.cucumber.java.en.Given;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.locators.RelativeLocator;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -15,7 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import java.io.*;
 import java.time.Duration;
+import java.util.Set;
 
 public class SeleniumTest {
 
@@ -27,31 +25,104 @@ public class SeleniumTest {
         driver = HooksTest.getDriver();
     }
 
+    public void waiting(int seconds) throws InterruptedException {
+        synchronized (driver) {
+            driver.wait(seconds * 1000);
+        }
+
+    }
+
     @Given("Prerequisites to run test cases {string}")
     public void prerequisitesToRunTestCases(String testCaseId) {
         System.out.println("Test Case Id :" + testCaseId);
         MDC.put("testCaseId", testCaseId);
     }
 
-    @Test
-    @Given("Run selenium google test case")
-    public void function() throws InterruptedException {
-        driver.get("https://www.google.com");
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10)); // Wait for up to 10 seconds
-        WebElement searchBox = wait.until(ExpectedConditions.presenceOfElementLocated(By.name("q"))); // Wait for search box to be present
-        WebElement searchQuery = driver.findElement(By.xpath("//textarea[@name='q']"));
-        searchQuery.sendKeys("Hello world!!!" + Keys.ENTER);
-        synchronized (driver) {
-            driver.wait(4000);
+    public void instagramLogin() throws IOException {
+
+        String userName = System.getProperty("username");
+        String password = System.getProperty("password");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30)); // Wait for up to 15 seconds
+
+        driver.get("https://www.instagram.com/accounts/login/?hl=en");
+
+        By inputEmail = By.xpath("//input[@name='email']");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(inputEmail));
+        driver.findElement(inputEmail).sendKeys(userName + Keys.ENTER);
+
+        WebElement inputPassword = driver.findElement(By.xpath("//input[@name='pass']"));
+        inputPassword.sendKeys(password + Keys.ENTER);
+
+        By notNowBtn = By.xpath("//div[@role='button' and .//text()[contains(.,'Not now')]]");
+        wait.until(ExpectedConditions.elementToBeClickable(notNowBtn)).click();
+
+        Set<Cookie> cookies = driver.manage().getCookies();
+
+        ObjectOutputStream oos =
+                new ObjectOutputStream(new FileOutputStream("insta_cookies.data"));
+        oos.writeObject(cookies);
+        oos.close();
+    }
+
+    @Given("Send message {string} to user {string} on instagram")
+    public void instagramSendingMessages(String message, String userId) throws InterruptedException, IOException, ClassNotFoundException {
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30)); // Wait for up to 15 seconds
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+
+        driver.get("https://www.instagram.com/");
+        Thread.sleep(3000);
+        // Load cookies
+        ObjectInputStream ois =
+                new ObjectInputStream(new FileInputStream("insta_cookies.data"));
+        Set<Cookie> cookies = (Set<Cookie>) ois.readObject();
+        ois.close();
+        // Add cookies
+        for (Cookie cookie : cookies) {
+            driver.manage().addCookie(cookie);
         }
-        String str = driver.getTitle();
-//        assertEquals(str, "Google");
-//        logger.error("Search box found after wait");
-//        logger.info(str);
-//        logger.debug("title equal :"+str);
-//        logger.warn("warn");
-//        logger.trace(str);
-        By ele = RelativeLocator.with(By.className("s")).near(By.className("s"));
+        driver.navigate().refresh();
+
+        By svg = By.xpath("//*[name()='svg' and @aria-label='Messages']");
+        WebElement button = wait.until(ExpectedConditions.presenceOfElementLocated(svg))
+                .findElement(By.xpath("./ancestor::div[@role='button' or @aria-selected]"));
+        new Actions(driver)
+                .moveToElement(button)
+                .pause(Duration.ofMillis(300))
+                .click()
+                .perform();
+
+        WebElement notNow = wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.xpath("//button[text()='Not Now']")
+                )
+        );
+        notNow.click();
+
+       waiting(5);
+
+        // 1. Locate username text
+        WebElement nameSpan = wait.until(
+                ExpectedConditions.presenceOfElementLocated(
+                        By.xpath("//span[@title='" + userId + "']")
+                )
+        );
+        // 2. Move up to clickable div
+        WebElement chatRow = nameSpan.findElement(
+                By.xpath("./ancestor::div[@role='button']")
+        );
+        // 3. Click using JS (BEST for Instagram)
+        js.executeScript("arguments[0].click();", chatRow);
+
+        WebElement messageBox = wait.until(
+                ExpectedConditions.presenceOfElementLocated(
+                        By.xpath("//div[@contenteditable='true' and @role='textbox']")
+                )
+        );
+        js.executeScript("arguments[0].focus();", messageBox);
+        messageBox.sendKeys(message);
+        messageBox.sendKeys(Keys.ENTER);
+
     }
 
     @Test

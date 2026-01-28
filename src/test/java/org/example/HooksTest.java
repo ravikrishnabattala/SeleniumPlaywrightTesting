@@ -89,7 +89,7 @@ public class HooksTest {
         try {
             ChromeOptions options = new ChromeOptions();
 //        options.setBrowserVersion("latest");
-            options.setPageLoadStrategy(PageLoadStrategy.EAGER);
+            options.setPageLoadStrategy(PageLoadStrategy.NORMAL);
             Duration duration = Duration.of(2, ChronoUnit.SECONDS);
 //        Proxy proxy = new Proxy();
 //        proxy.setHttpProxy("https");
@@ -135,7 +135,8 @@ public class HooksTest {
 
     @AfterEach
     @After
-    public void afterExecuteHook() {
+    public void afterExecuteHook() throws InterruptedException {
+        Thread.sleep(3000);
         System.out.println("Cucumber & Junit After each run... "+MDC.get("testCaseId"));
         MDC.clear();
         if (driver != null) {
