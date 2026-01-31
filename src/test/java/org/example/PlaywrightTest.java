@@ -1,29 +1,46 @@
 package org.example;
 
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import io.cucumber.java.en.Given;
 import jdk.jfr.Description;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Random;
+import java.io.IOException;
+import java.nio.file.Paths;
+
 
 public class PlaywrightTest {
 
+    private static Browser browser;
+    private static BrowserContext browserContext;
     private static Page page = null;
     private static final Logger logger = LoggerFactory.getLogger(PlaywrightTest.class);
 
-
     public PlaywrightTest() {
         page = HooksTest.getPage();
+        browserContext = HooksTest.getContext();
+        browser = HooksTest.getBrowser();
         System.out.println("Playwright constructor...");
         if (page == null) {
             throw new RuntimeException("Page is not initialized!");
         }
     }
+
+    private void waiting(int seconds){
+        try {
+            synchronized(page){
+                page.wait(seconds * 1000L);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
 
     @Description("Locator for Google Search Box")
     private Locator getSearchBox() {
@@ -35,33 +52,30 @@ public class PlaywrightTest {
         return page.locator("input[name='btnK']");
     }
 
-    @Test
-    @DisplayName("It is a playwright test case")
-    @Given("Run playwright test case")
-    public void testing() {
-        page.navigate("https://www.google.com/");
-        randomDelay();
 
-        getSearchBox().fill("ravikrishnabattala.netlify.app");
-        getSearchBox().press("Enter");
-        randomDelay();
+    @Given("Login to Instagram userId = {string} and password = {string} playwright")
+    public void loginToInstagram(String userId,String secret) throws IOException {
 
-        page.locator("h3").first();
-        randomDelay(); // Add a random delay
+        String userName = System.getProperty("username", userId);
+        String password = System.getProperty("password", secret);
 
-        // Check for CAPTCHA
-        logger.info("google browsing...");
-        if (page.locator("text=Please show you're not a robot").isVisible()) {
-            System.out.println("CAPTCHA detected. Manual intervention required.");
-        }
+        page.navigate("https://www.instagram.com/accounts/login/?hl=en");
+        page.locator("//input[@name='email']").fill(userName);
+        page.locator("//input[@name='pass']").fill(password);
+        page.keyboard().press("Enter");
+        page.locator("//div[@role='button' and .//text()[contains(.,'Not now')]]").click();
+
+       browserContext.storageState(
+               new BrowserContext.StorageStateOptions()
+                       .setPath(Paths.get("insta_state.json"))
+       );
     }
 
-    public void randomDelay() {
-        Random random = new Random();
-        try {
-            Thread.sleep(random.nextInt(1000) + 2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    @Given("Login to Instagram playwright")
+    public void loginToInstagramPlaywright() {
+        page.navigate("https://www.instagram.com/");
+        waiting(10);
+
     }
+
 }

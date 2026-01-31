@@ -1,12 +1,9 @@
 package org.example;
 
-import io.cucumber.java.an.E;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import org.junit.jupiter.api.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.locators.RelativeLocator;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
@@ -32,9 +29,13 @@ public class SeleniumTest {
         js = (JavascriptExecutor) driver;
     }
 
-    public void waiting(int seconds) throws InterruptedException {
-        synchronized (driver) {
-            driver.wait(seconds * 1000);
+    public void waiting(int seconds) {
+        try {
+            synchronized (driver) {
+                driver.wait(seconds * 1000);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -46,7 +47,7 @@ public class SeleniumTest {
     }
 
     @Given("Login to Instagram userId = {string} and password = {string}")
-    public void instagramLogin(String userId, String secret) throws IOException, InterruptedException {
+    public void instagramLogin(String userId, String secret) throws IOException {
 
         String userName = System.getProperty("username", userId);
         String password = System.getProperty("password", secret);
@@ -149,7 +150,7 @@ public class SeleniumTest {
     }
 
     @Then("Scroll reels per {int} minutes")
-    public void scrollReelsPerTimeMinutes(int time) throws InterruptedException {
+    public void scrollReelsPerTimeMinutes(int time) {
 
         WebElement reelsLink = wait.until(
                 ExpectedConditions.elementToBeClickable(
@@ -183,7 +184,7 @@ public class SeleniumTest {
     }
 
     @Then("Watch all stories")
-    public void watchAllStories() throws InterruptedException {
+    public void watchAllStories() {
         By firstUnseenStory = By.xpath(
                 "//div[@role='button' and contains(@aria-label,'Story by') and contains(@aria-label,'not seen')]"
         );
@@ -196,14 +197,14 @@ public class SeleniumTest {
                         By.xpath("//div[@aria-label='Toggle audio' and @role='button']")
                 )
         );
-        if(audioToggle.isDisplayed()) {
+        if (audioToggle.isDisplayed()) {
             js.executeScript("arguments[0].click", audioToggle);
         }
         waiting(60);
     }
 
     @Given("Run selenium facebook test case")
-    public void function1() throws InterruptedException {
+    public void function1() {
         driver.get("https://www.facebook.com");
         logger.info("error becuase of wait");
         String str = driver.getTitle();

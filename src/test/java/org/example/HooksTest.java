@@ -37,7 +37,6 @@ public class HooksTest {
     @BeforeEach
     public void junitBeforeHook() {
         System.out.println("Junit before run...");
-        driver = getDriver();
         initiateBrowsers();
         TestInfo testInfo = null;
         setUp(testInfo);
@@ -46,27 +45,30 @@ public class HooksTest {
     @Before
     public void cucumberBeforeHook(Scenario scenario) {
         System.out.println("Cucumber before run...");
-        driver = getDriver();
-//        initiateBrowsers();
+        initiateBrowsers();
         TestInfo testInfo = null;
-        setUp(testInfo);
+//        setUp(testInfo);
     }
 
     public static void initiateBrowsers() {
         logger.info("Initializing Playwright...");
         try {
-            Map headers = new HashMap();
-            headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
-            headers.put("Accept-Language", "en-US,en;q=0.9");
             BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions();
             launchOptions.setHeadless(false);
             launchOptions.setSlowMo(100);
-            Browser.NewContextOptions contextOptions = new Browser.NewContextOptions();
-            contextOptions.setExtraHTTPHeaders(headers);
-
             playwright = Playwright.create();
             browser = playwright.chromium().launch(launchOptions);
-            context = browser.newContext();
+
+            Map headers = new HashMap();
+            headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+            headers.put("Accept-Language", "en-US,en;q=0.9");
+
+            Browser.NewContextOptions contextOptions = new Browser.NewContextOptions();
+            contextOptions.setExtraHTTPHeaders(headers);
+            contextOptions.setViewportSize(null);
+            contextOptions.setStorageStatePath(Paths.get("insta_state.json"));
+
+            context = browser.newContext(contextOptions);
             context.tracing().start(new Tracing.StartOptions()
                     .setScreenshots(true)
                     .setSnapshots(true));
@@ -121,11 +123,11 @@ public class HooksTest {
         return driver;
     }
 
-    public BrowserContext getContext() {
+    public static BrowserContext getContext() {
         return context;
     }
 
-    public Browser getBrowser() {
+    public static Browser getBrowser() {
         return browser;
     }
 
