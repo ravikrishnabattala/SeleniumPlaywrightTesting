@@ -1,6 +1,8 @@
 package org.example;
 
+import io.cucumber.java.an.E;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -13,6 +15,7 @@ import org.slf4j.MDC;
 
 import java.io.*;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 public class SeleniumTest {
@@ -25,7 +28,7 @@ public class SeleniumTest {
     public SeleniumTest() {
         System.out.println("Selenium constructor...");
         driver = HooksTest.getDriver();
-        wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         js = (JavascriptExecutor) driver;
     }
 
@@ -43,10 +46,10 @@ public class SeleniumTest {
     }
 
     @Given("Login to Instagram userId = {string} and password = {string}")
-    public void instagramLogin(String userId,String secret) throws IOException, InterruptedException {
+    public void instagramLogin(String userId, String secret) throws IOException, InterruptedException {
 
-        String userName =  System.getProperty("username",userId);
-        String password = System.getProperty("password",secret);
+        String userName = System.getProperty("username", userId);
+        String password = System.getProperty("password", secret);
 
         driver.get("https://www.instagram.com/accounts/login/?hl=en");
 
@@ -71,7 +74,7 @@ public class SeleniumTest {
     }
 
     @Given("Login to Instagram")
-    public  void instagramLogin() throws InterruptedException, IOException, ClassNotFoundException {
+    public void instagramLogin() throws InterruptedException, IOException, ClassNotFoundException {
 
         driver.get("https://www.instagram.com/");
         Thread.sleep(3000);
@@ -86,6 +89,7 @@ public class SeleniumTest {
         }
         driver.navigate().refresh();
     }
+
     @Given("Send message {string} to user {string} on instagram")
     public void instagramSendingMessages(String message, String userId) throws InterruptedException, IOException, ClassNotFoundException {
 
@@ -144,7 +148,60 @@ public class SeleniumTest {
 
     }
 
-    @Test
+    @Then("Scroll reels per {int} minutes")
+    public void scrollReelsPerTimeMinutes(int time) throws InterruptedException {
+
+        WebElement reelsLink = wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.xpath("//a[contains(@href,'/reels')]")
+                )
+        );
+        js.executeScript("arguments[0].click();", reelsLink);
+
+        WebElement audioButton = wait.until(
+                ExpectedConditions.presenceOfElementLocated(
+                        By.xpath("//div[@aria-label='Video player']//div[@role='presentation']//div[@role='button']//div[@role='button']")
+                )
+        );
+        js.executeScript("arguments[0].click();", audioButton);
+
+        LocalDateTime dateTime = LocalDateTime.now();
+        LocalDateTime timeout = dateTime.plusMinutes(time);
+        int k = (int) (time / 0.5);
+        int i = 0;
+        do {
+            WebElement nextReel = wait.until(
+                    ExpectedConditions.presenceOfElementLocated(
+                            By.xpath("//div[@role='toolbar']/div[@role='button'][2]")
+                    )
+            );
+            js.executeScript("arguments[0].click", nextReel);
+            waiting(10);
+            i++;
+        } while (i <= k);
+
+    }
+
+    @Then("Watch all stories")
+    public void watchAllStories() throws InterruptedException {
+        By firstUnseenStory = By.xpath(
+                "//div[@role='button' and contains(@aria-label,'Story by') and contains(@aria-label,'not seen')]"
+        );
+        WebElement story = wait.until(
+                ExpectedConditions.elementToBeClickable(firstUnseenStory)
+        );
+        story.click();
+        WebElement audioToggle = wait.until(
+                ExpectedConditions.presenceOfElementLocated(
+                        By.xpath("//div[@aria-label='Toggle audio' and @role='button']")
+                )
+        );
+        if(audioToggle.isDisplayed()) {
+            js.executeScript("arguments[0].click", audioToggle);
+        }
+        waiting(60);
+    }
+
     @Given("Run selenium facebook test case")
     public void function1() throws InterruptedException {
         driver.get("https://www.facebook.com");
@@ -155,5 +212,4 @@ public class SeleniumTest {
         logger.warn("warn");
         logger.trace(str);
     }
-
 }
