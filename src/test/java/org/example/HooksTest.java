@@ -139,7 +139,7 @@ public class HooksTest {
     @After
     public void afterExecuteHook() throws InterruptedException {
         Thread.sleep(3000);
-        System.out.println("Cucumber & Junit After each run... "+MDC.get("testCaseId"));
+        System.out.println("Cucumber & Junit After each run... " + MDC.get("testCaseId"));
         MDC.clear();
         if (driver != null) {
             driver.quit();

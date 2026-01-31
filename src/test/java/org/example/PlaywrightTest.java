@@ -38,7 +38,6 @@ public class PlaywrightTest {
         }catch (Exception e){
             e.printStackTrace();
         }
-
     }
 
 
