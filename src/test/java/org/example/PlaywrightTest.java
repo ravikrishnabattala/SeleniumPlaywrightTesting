@@ -5,12 +5,19 @@ import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
 import jdk.jfr.Description;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.time.Duration;
 
 
 public class PlaywrightTest {
@@ -74,7 +81,39 @@ public class PlaywrightTest {
     public void loginToInstagramPlaywright() {
         page.navigate("https://www.instagram.com/");
         waiting(10);
-
     }
 
+    @Then("Send message {string} to user {string} on instagram playwright")
+    public void sendMessageMessageToUserUserIdOnInstagramPlaywright(String message,String userId) {
+
+        Locator messagesButton = page.locator(
+                "xpath=//*[name()='svg' and @aria-label='Messages']" +
+                        "/ancestor::div[@role='button']"
+        );
+
+        messagesButton.first().click(new Locator.ClickOptions().setForce(true));
+
+        Locator notNowBtn = page.locator("xpath=//button[normalize-space()='Not Now']");
+        if (notNowBtn.isVisible()) {
+            notNowBtn.click();
+        }
+
+        Locator searchInput = page.locator(
+                "xpath=//input[@name='searchInput' and @placeholder='Search']"
+        );
+        searchInput.fill(userId);
+
+        Locator userButton = page.locator(
+                "xpath=//span[@title='" + userId + "']/ancestor::div[@role='button']"
+        );
+        userButton.first().click(new Locator.ClickOptions().setForce(true));
+
+        Locator messageBox = page.locator(
+                "xpath=//div[@contenteditable='true' and @role='textbox']"
+        );
+        messageBox.fill(message);
+
+        page.keyboard().press("Enter");
+
+    }
 }

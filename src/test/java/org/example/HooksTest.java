@@ -99,9 +99,6 @@ public class HooksTest {
             driver.manage().window().setPosition(new Point(0, 0));
             driver.manage().window().setSize(new Dimension(1920, 1080));
             logger.info("Selenium WebDriver started. Window Handle: {}", driver.getWindowHandle());
-//            ((JavascriptExecutor) driver).executeScript("window.open();");
-//            driver.switchTo().window(new ArrayList<>(driver.getWindowHandles()).get(1));
-//        ((JavascriptExecutor) driver).executeScript("window.open('', '_blank', 'width=800,height=600');");
             if (testInfo != null && !testInfo.getTags().isEmpty()) {
                 MDC.put("testCaseId", testInfo.getTags().iterator().next());
             } else {

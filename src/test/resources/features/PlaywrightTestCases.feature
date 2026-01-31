@@ -6,9 +6,10 @@ Feature: Run testcases of playwright
     Given Login to Instagram userId = 'userId' and password = 'password' playwright
 
 
-  Scenario Outline: scenario outline
+  Scenario Outline: chatting.....
     Given Login to Instagram playwright
+    Then Send message '<message>' to user '<userId>' on instagram playwright
 
     Examples:
-      | a |
-      | 1 |
+      | testCaseId | message         | userId     |
+      | 1234567    | Hii Googles.... | Zoozubieee |
