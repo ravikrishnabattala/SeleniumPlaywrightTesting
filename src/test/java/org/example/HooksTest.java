@@ -39,7 +39,7 @@ public class HooksTest {
         System.out.println("Junit before run...");
         initiateBrowsers();
         TestInfo testInfo = null;
-        setUp(testInfo);
+//        setUp(testInfo);
     }
 
     @Before
@@ -66,8 +66,8 @@ public class HooksTest {
             Browser.NewContextOptions contextOptions = new Browser.NewContextOptions();
             contextOptions.setExtraHTTPHeaders(headers);
             contextOptions.setViewportSize(null);
-            contextOptions.setStorageStatePath(Paths.get("insta_state.json"));
-
+//            contextOptions.setStorageStatePath(Paths.get("insta_state.json"));
+            contextOptions.setStorageStatePath(Paths.get("linkedin_cookies.json"));
             context = browser.newContext(contextOptions);
             context.tracing().start(new Tracing.StartOptions()
                     .setScreenshots(true)

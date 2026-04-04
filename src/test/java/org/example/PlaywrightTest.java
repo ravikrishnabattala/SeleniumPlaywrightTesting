@@ -1,18 +1,14 @@
 package org.example;
 
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserContext;
-import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.Page;
+import com.microsoft.playwright.*;
+import io.cucumber.java.an.E;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import jdk.jfr.Description;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -77,6 +73,89 @@ public class PlaywrightTest {
     @Given("Login to Instagram playwright")
     public void loginToInstagramPlaywright() {
         page.navigate("https://www.instagram.com/");
+    }
+
+    @Given("Login to Linkedin username={string} & password={string}")
+    public void loginToLinkedin(String username, String passcode) throws InterruptedException {
+        page.navigate("https://www.linkedin.com/jobs/collections/recommended");
+        Locator userName = page.locator("#username");
+        userName.fill(username);
+        Locator password = page.locator("#password");
+        password.fill(passcode);
+        page.locator("button[aria-label='Sign in']").click();
+        page.waitForTimeout(10000);
+//        page.locator("button[aria-label='Submit pin']").click();
+        browserContext.storageState(
+                new BrowserContext.StorageStateOptions()
+                        .setPath(Paths.get("linkedin_cookies.json"))
+        );
+    }
+
+    @Given("Apply recommended jobs")
+    public void applyJobs() {
+        page.navigate("https://www.linkedin.com/jobs/collections/recommended");
+        List jobIds = (List) page.locator("[data-occludable-job-id]")
+                .evaluateAll("els => els.map(e => e.getAttribute('data-occludable-job-id'))");
+
+        System.out.println(jobIds);
+        Locator nextPage = page.locator("button[aria-label='View next page']");
+        while (nextPage.isVisible()) {
+            nextPage.click();
+            List nextJobIds = (List) page.locator("[data-occludable-job-id]")
+                    .evaluateAll("els => els.map(e => e.getAttribute('data-occludable-job-id'))");
+            jobIds.addAll(nextJobIds);
+        }
+        for (int i = 0; i < jobIds.size(); i++) {
+            String jobId = (String) jobIds.get(i);
+            Page newPage = browserContext.newPage();
+            try {
+                newPage.navigate("https://www.linkedin.com/jobs/collections/recommended/?currentJobId=" + jobId);
+                Locator job = newPage.locator("#jobs-apply-button-id").first();
+                waitUntilVisibleOrSkip(job);
+                continueToNext("button[aria-label='Continue to next step']", newPage);
+                Locator review = newPage.locator("button[aria-label='Review your application']");
+                waitUntilVisibleOrSkip(review);
+                Locator submit = newPage.locator("button[aria-label='Submit application']");
+                waitUntilVisibleOrSkip(submit);
+                newPage.waitForTimeout(5000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            List<Page> pages = browserContext.pages();
+            for (Page p : pages) {
+                p.close();
+            }
+        }
+    }
+
+    public void continueToNext(String xpath, Page newPage) {
+        try {
+            Locator continueNext = newPage.locator(xpath);
+            continueNext.waitFor(new Locator.WaitForOptions().setTimeout(3000));
+            int k = 0;
+            while (continueNext.isVisible()) {
+                k++;
+                continueNext.click();
+                continueNext.waitFor(new Locator.WaitForOptions().setTimeout(3000));
+                if (k > 5) {
+                    break;
+                }
+            }
+
+        } catch (PlaywrightException p) {
+            p.printStackTrace();
+        }
+    }
+
+    public void waitUntilVisibleOrSkip(Locator locator) {
+        if (locator.isVisible()) {
+            locator.click();
+        }
+        try {
+            locator.waitFor(new Locator.WaitForOptions().setTimeout(3000));
+            if (locator.isVisible()) locator.click();
+        } catch (PlaywrightException e) {
+        }
     }
 
     @Then("Send message {string} to user {string} on instagram playwright")

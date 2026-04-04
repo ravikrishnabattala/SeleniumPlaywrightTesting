@@ -13,3 +13,13 @@ Feature: Run testcases of playwright
     Examples:
       | testCaseId | message         | userId     |
       | 1234567    | Hii Googles.... | Zoozubieee |
+
+  Scenario Outline: Login into Linkedin
+    Given Login to Linkedin username='<username>' & password='<passcode>'
+    Examples:
+      | username                          | passcode   |
+      | ravikrishna.b_cse2019@svce.edu.in | #####      |
+
+
+  Scenario: Apply for Jobs
+    Given Apply recommended jobs
