@@ -67,7 +67,7 @@ public class HooksTest {
             contextOptions.setExtraHTTPHeaders(headers);
             contextOptions.setViewportSize(null);
 //            contextOptions.setStorageStatePath(Paths.get("insta_state.json"));
-            contextOptions.setStorageStatePath(Paths.get("linkedin_cookies.json"));
+            contextOptions.setStorageStatePath(Paths.get("naukri_cookies.json"));
             context = browser.newContext(contextOptions);
             context.tracing().start(new Tracing.StartOptions()
                     .setScreenshots(true)

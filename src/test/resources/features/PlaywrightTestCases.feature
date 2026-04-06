@@ -17,9 +17,21 @@ Feature: Run testcases of playwright
   Scenario Outline: Login into Linkedin
     Given Login to Linkedin username='<username>' & password='<passcode>'
     Examples:
-      | username                          | passcode   |
-      | ravikrishna.b_cse2019@svce.edu.in | #####      |
+      | username                          | passcode |
+      | ravikrishna.b_cse2019@svce.edu.in | #####    |
 
 
   Scenario: Apply for Jobs
     Given Apply recommended jobs
+
+
+  Scenario Outline: Login to Naukri
+    Given Login to Naukri userId = '<username>' and password = '<passcode>'
+
+    Examples:
+      | username                          | passcode |
+      | ravikrishna.b_cse2019@svce.edu.in | #####    |
+
+
+  Scenario: Apply Jobs
+    Given Apply naukri jobs

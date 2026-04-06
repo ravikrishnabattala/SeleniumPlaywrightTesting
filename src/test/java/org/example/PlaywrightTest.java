@@ -8,6 +8,7 @@ import jdk.jfr.Description;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -18,12 +19,14 @@ public class PlaywrightTest {
     private static Browser browser;
     private static BrowserContext browserContext;
     private static Page page = null;
+    private static List<String> easyApplies;
     private static final Logger logger = LoggerFactory.getLogger(PlaywrightTest.class);
 
     public PlaywrightTest() {
         page = HooksTest.getPage();
         browserContext = HooksTest.getContext();
         browser = HooksTest.getBrowser();
+        easyApplies = new ArrayList<>();
         System.out.println("Playwright constructor...");
         if (page == null) {
             throw new RuntimeException("Page is not initialized!");
@@ -97,7 +100,6 @@ public class PlaywrightTest {
         List jobIds = (List) page.locator("[data-occludable-job-id]")
                 .evaluateAll("els => els.map(e => e.getAttribute('data-occludable-job-id'))");
 
-        System.out.println(jobIds);
         Locator nextPage = page.locator("button[aria-label='View next page']");
         while (nextPage.isVisible()) {
             nextPage.click();
@@ -105,7 +107,7 @@ public class PlaywrightTest {
                     .evaluateAll("els => els.map(e => e.getAttribute('data-occludable-job-id'))");
             jobIds.addAll(nextJobIds);
         }
-        for (int i = 0; i < jobIds.size(); i++) {
+        for (int i = jobIds.size() - 1; i >= 0; i--) {
             String jobId = (String) jobIds.get(i);
             Page newPage = browserContext.newPage();
             try {
@@ -113,6 +115,8 @@ public class PlaywrightTest {
                 Locator job = newPage.locator("#jobs-apply-button-id").first();
                 waitUntilVisibleOrSkip(job);
                 continueToNext("button[aria-label='Continue to next step']", newPage);
+                easyApplies.add(jobId);
+                System.out.println(easyApplies);
                 Locator review = newPage.locator("button[aria-label='Review your application']");
                 waitUntilVisibleOrSkip(review);
                 Locator submit = newPage.locator("button[aria-label='Submit application']");
@@ -130,7 +134,7 @@ public class PlaywrightTest {
 
     public void continueToNext(String xpath, Page newPage) {
         try {
-            Locator continueNext = newPage.locator(xpath);
+            Locator continueNext = newPage.locator(xpath).first();
             continueNext.waitFor(new Locator.WaitForOptions().setTimeout(3000));
             int k = 0;
             while (continueNext.isVisible()) {
@@ -207,4 +211,38 @@ public class PlaywrightTest {
         page.keyboard().press("Enter");
 
     }
+
+
+    @Given("Login to Naukri userId = {string} and password = {string}")
+    public void loginToNaukri(String username, String passcode) throws InterruptedException {
+        page.navigate("https://www.naukri.com/mnjuser/recommendedjobs");
+        Locator userName = page.locator("#usernameField");
+        userName.fill(username);
+        Locator password = page.locator("#passwordField");
+        password.fill(passcode);
+        page.locator("button[type='Submit']").first().click();
+        page.waitForTimeout(10000);
+        browserContext.storageState(
+                new BrowserContext.StorageStateOptions()
+                        .setPath(Paths.get("naukri_cookies.json"))
+        );
+    }
+
+    @Given("Apply naukri jobs")
+    public void applyNaukriJobs() {
+        page.navigate("https://www.naukri.com/mnjuser/recommendedjobs");
+        List jobIds = (List) page.locator("[data-job-id]")
+                .evaluateAll("els => els.map(e => e.getAttribute('data-job-id'))");
+
+        for (int i = 0; i < jobIds.size(); i++) {
+            String jobId = (String) jobIds.get(i);
+            Page newPage = browserContext.waitForPage(() -> {
+                    page.locator("article[data-job-id='" + jobId + "']").click();
+            });
+
+            continueToNext("#apply-button",newPage);
+            newPage.close();
+        }
+    }
+
 }
