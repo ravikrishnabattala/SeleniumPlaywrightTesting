@@ -5,9 +5,14 @@ import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import org.junit.jupiter.api.*;
-import org.openqa.selenium.*;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.PageLoadStrategy;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -37,17 +42,17 @@ public class HooksTest {
     @BeforeEach
     public void junitBeforeHook() {
         System.out.println("Junit before run...");
-        initiateBrowsers();
+//        initiateBrowsers();
         TestInfo testInfo = null;
-//        setUp(testInfo);
+        setUp(testInfo);
     }
 
     @Before
     public void cucumberBeforeHook(Scenario scenario) {
         System.out.println("Cucumber before run...");
-        initiateBrowsers();
+//        initiateBrowsers();
         TestInfo testInfo = null;
-//        setUp(testInfo);
+        setUp(testInfo);
     }
 
     public static void initiateBrowsers() {
@@ -88,14 +93,16 @@ public class HooksTest {
         }
         try {
             ChromeOptions options = new ChromeOptions();
+            ChromeDriverService service = new ChromeDriverService.Builder().usingAnyFreePort().build();
 //        options.setBrowserVersion("latest");
             options.setPageLoadStrategy(PageLoadStrategy.NORMAL);
             Duration duration = Duration.of(2, ChronoUnit.SECONDS);
 //        Proxy proxy = new Proxy();
 //        proxy.setHttpProxy("https");
 //        options.setProxy(proxy);
+            ClientConfig config = ClientConfig.defaultConfig();
             options.setScriptTimeout(duration);
-            driver = new ChromeDriver(options);
+            driver = new ChromeDriver(service,options,config);
             driver.manage().window().setPosition(new Point(0, 0));
             driver.manage().window().setSize(new Dimension(1920, 1080));
             logger.info("Selenium WebDriver started. Window Handle: {}", driver.getWindowHandle());

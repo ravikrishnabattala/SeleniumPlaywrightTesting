@@ -94,22 +94,22 @@ public class SeleniumTest {
     @Given("Send message {string} to user {string} on instagram")
     public void instagramSendingMessages(String message, String userId) throws InterruptedException, IOException, ClassNotFoundException {
 
-        By svg = By.xpath("//*[name()='svg' and @aria-label='Messages']");
-        WebElement button = wait.until(ExpectedConditions.presenceOfElementLocated(svg))
-                .findElement(By.xpath("./ancestor::div[@role='button' or @aria-selected]"));
-        new Actions(driver)
-                .moveToElement(button)
-                .pause(Duration.ofMillis(300))
-                .click()
-                .perform();
-
         WebElement notNow = wait.until(
                 ExpectedConditions.elementToBeClickable(
                         By.xpath("//button[text()='Not Now']")
                 )
         );
         notNow.click();
-        waiting(5);
+
+        By svg = By.xpath("//*[name()='svg' and @aria-label='Messages']");
+        WebElement button = wait.until(ExpectedConditions.presenceOfElementLocated(svg))
+                .findElement(By.xpath("./ancestor::div[@role='button' or @aria-selected]"));
+
+        new Actions(driver)
+                .moveToElement(button)
+                .pause(Duration.ofMillis(300))
+                .click()
+                .perform();
 
         By searchInput = By.xpath("//input[@name='searchInput' and @type='text' and @placeholder='Search']");
 
@@ -152,6 +152,10 @@ public class SeleniumTest {
     @Then("Scroll reels per {int} minutes")
     public void scrollReelsPerTimeMinutes(int time) {
 
+        By notNowBtn = By.xpath("//div[@role='dialog']//button[text()='Not Now']");
+        WebElement notNow = wait.until(ExpectedConditions.visibilityOfElementLocated(notNowBtn));
+        js.executeScript("arguments[0].click();", notNow);
+
         WebElement reelsLink = wait.until(
                 ExpectedConditions.elementToBeClickable(
                         By.xpath("//a[contains(@href,'/reels')]")
@@ -173,18 +177,31 @@ public class SeleniumTest {
         do {
             WebElement nextReel = wait.until(
                     ExpectedConditions.presenceOfElementLocated(
-                            By.xpath("//div[@role='toolbar']/div[@role='button'][2]")
+                            By.xpath("//div[@aria-label='Navigate to next Reel']")
                     )
             );
-            js.executeScript("arguments[0].click", nextReel);
+            js.executeScript("arguments[0].scrollIntoView(true)", nextReel);
+            nextReel.click();
             waiting(10);
             i++;
         } while (i <= k);
 
+        WebElement previousReel = wait.until(
+                ExpectedConditions.presenceOfElementLocated(
+                        By.xpath("//div[@aria-label='Navigate to previous Reel']")
+                )
+        );
+        js.executeScript("arguments[0].scrollIntoView(true)", previousReel);
+        previousReel.click();
     }
 
     @Then("Watch all stories")
     public void watchAllStories() {
+
+        By notNowBtn = By.xpath("//div[@role='dialog']//button[text()='Not Now']");
+        WebElement notNow = wait.until(ExpectedConditions.visibilityOfElementLocated(notNowBtn));
+        js.executeScript("arguments[0].click();", notNow);
+
         By firstUnseenStory = By.xpath(
                 "//div[@role='button' and contains(@aria-label,'Story by') and contains(@aria-label,'not seen')]"
         );
@@ -192,13 +209,15 @@ public class SeleniumTest {
                 ExpectedConditions.elementToBeClickable(firstUnseenStory)
         );
         story.click();
+
         WebElement audioToggle = wait.until(
                 ExpectedConditions.presenceOfElementLocated(
                         By.xpath("//div[@aria-label='Toggle audio' and @role='button']")
                 )
         );
+
         if (audioToggle.isDisplayed()) {
-            js.executeScript("arguments[0].click", audioToggle);
+            js.executeScript("arguments[0].click()", audioToggle);
         }
         waiting(60);
     }

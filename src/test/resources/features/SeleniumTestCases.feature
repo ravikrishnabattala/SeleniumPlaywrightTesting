@@ -11,8 +11,8 @@ Feature: Run testcases of Selenium
     Then Send message '<message>' to user '<userId>' on instagram
 
     Examples:
-      | testCaseId | message         | userId     |
-      | 1234567    | Hii Googles.... | Zoozubieee |
+      | testCaseId | message         | userId              |
+      | 1234567    | Hii Googles.... | memes matrame pampu |
 
   Scenario Outline: scrolling....
     Given Login to Instagram
