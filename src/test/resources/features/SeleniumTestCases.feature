@@ -25,3 +25,12 @@ Feature: Run testcases of Selenium
   Scenario: stories viewer...
     Given Login to Instagram
     Then Watch all stories
+
+
+  Scenario Outline: add comment to latest post
+    Given Login to Instagram
+    Then Comment '<user>' post with '<message>'
+
+    Examples:
+      | user    | message     |
+      | user    | message     |

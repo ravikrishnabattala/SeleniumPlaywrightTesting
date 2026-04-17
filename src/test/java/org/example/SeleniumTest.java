@@ -1,7 +1,10 @@
 package org.example;
 
+import com.google.gson.internal.bind.util.ISO8601Utils;
+import com.microsoft.playwright.Keyboard;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
+import net.bytebuddy.asm.Advice;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -10,9 +13,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 public class SeleniumTest {
@@ -231,5 +238,121 @@ public class SeleniumTest {
         logger.debug("title equal :");
         logger.warn("warn");
         logger.trace(str);
+    }
+
+    @Then("Comment {string} post with {string}")
+    public void commentUserPostWithMessage(String userId, String message) {
+
+        By notNowBtn = By.xpath("//div[@role='dialog']//button[text()='Not Now']");
+        WebElement notNow = wait.until(ExpectedConditions.visibilityOfElementLocated(notNowBtn));
+        js.executeScript("arguments[0].click()", notNow);
+
+
+        By index = By.xpath("//div[@data-visualcompletion='ignore-dynamic']");
+        Actions mouse = new Actions(driver).moveToElement(driver.findElement(index));
+        mouse.perform();
+
+        WebElement searchButton = wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.xpath("//a[@role='link']//*[name()='svg' and @aria-label='Search']/ancestor::a")
+                )
+        );
+        searchButton.click();
+
+        By searchInput = By.xpath("//input[@aria-label='Search input' and @type='text' and @placeholder='Search']");
+
+        String value = "";
+        for (int i = 0; i < userId.length(); i++) {
+            WebElement searchBox = wait.until(
+                    ExpectedConditions.presenceOfElementLocated(searchInput)
+            );
+            value += userId.charAt(i);
+            js.executeScript(
+                    "arguments[0].value = arguments[1];" +
+                            "arguments[0].dispatchEvent(new Event('input', { bubbles: true }));",
+                    searchBox, value);
+        }
+
+        By profileLink = By.xpath("//a[@role='link' and contains(@href," + userId + ")]");
+
+        WebElement profile = wait.until(
+                ExpectedConditions.presenceOfElementLocated(
+                        profileLink
+                )
+        );
+        js.executeScript("arguments[0].click();", profile);
+
+        String profileUrl = "https://www.instagram.com/" + userId;
+        driver.navigate().to(profileUrl);
+
+        By postLink = By.xpath("//a[contains(@href,'/" + userId + "/p/')]");
+        List<WebElement> postLinks = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(postLink));
+
+        for (int i = 0; i < postLinks.size(); i++) {
+            postLinks.get(i).click();
+
+            String text = String.valueOf(message.charAt(i));
+            By textArea = By.xpath("//textarea[@aria-label='Add a comment…']");
+            WebElement comment = wait.until(ExpectedConditions.presenceOfElementLocated(textArea));
+            js.executeScript("arguments[0].scrollIntoView()", comment);
+
+            Actions actions = new Actions(driver);
+            int width = 20 * text.length(); // adjust spacing
+            int height = 20;
+
+            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g = image.createGraphics();
+
+            // background
+            g.setColor(Color.WHITE);
+            g.fillRect(0, 0, width, height);
+
+            // text
+            g.setColor(Color.BLACK);
+            g.setFont(new Font("Arial", Font.BOLD, 18));
+            g.drawString(text, 2, 15);
+
+            StringBuilder fullText = new StringBuilder();
+
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    int pixel = image.getRGB(x, y);
+                    fullText.append(pixel == Color.BLACK.getRGB() ? "*" : "-");
+                }
+                fullText.append("\n"); // newline
+            }
+            List<String> keys = List.of(fullText.toString().split("\n"));
+
+            keys.forEach(System.out::println);
+            actions.moveToElement(comment)
+                    .click()
+//                    .sendKeys(keys.get(0)).keyDown(Keys.SHIFT).sendKeys(Keys.ENTER).keyUp(Keys.SHIFT)
+//                    .sendKeys(keys.get(1)).keyDown(Keys.SHIFT).sendKeys(Keys.ENTER).keyUp(Keys.SHIFT)
+                    .sendKeys(keys.get(2)).keyDown(Keys.SHIFT).sendKeys(Keys.ENTER).keyUp(Keys.SHIFT)
+                    .sendKeys(keys.get(3)).keyDown(Keys.SHIFT).sendKeys(Keys.ENTER).keyUp(Keys.SHIFT)
+                    .sendKeys(keys.get(4)).keyDown(Keys.SHIFT).sendKeys(Keys.ENTER).keyUp(Keys.SHIFT)
+                    .sendKeys(keys.get(5)).keyDown(Keys.SHIFT).sendKeys(Keys.ENTER).keyUp(Keys.SHIFT)
+                    .sendKeys(keys.get(6)).keyDown(Keys.SHIFT).sendKeys(Keys.ENTER).keyUp(Keys.SHIFT)
+                    .sendKeys(keys.get(7)).keyDown(Keys.SHIFT).sendKeys(Keys.ENTER).keyUp(Keys.SHIFT)
+                    .sendKeys(keys.get(8)).keyDown(Keys.SHIFT).sendKeys(Keys.ENTER).keyUp(Keys.SHIFT)
+                    .sendKeys(keys.get(9)).keyDown(Keys.SHIFT).sendKeys(Keys.ENTER).keyUp(Keys.SHIFT)
+                    .sendKeys(keys.get(10)).keyDown(Keys.SHIFT).sendKeys(Keys.ENTER).keyUp(Keys.SHIFT)
+                    .sendKeys(keys.get(11)).keyDown(Keys.SHIFT).sendKeys(Keys.ENTER).keyUp(Keys.SHIFT)
+                    .sendKeys(keys.get(12)).keyDown(Keys.SHIFT).sendKeys(Keys.ENTER).keyUp(Keys.SHIFT)
+                    .sendKeys(keys.get(13)).keyDown(Keys.SHIFT).sendKeys(Keys.ENTER).keyUp(Keys.SHIFT)
+                    .sendKeys(keys.get(14)).keyDown(Keys.SHIFT).sendKeys(Keys.ENTER).keyUp(Keys.SHIFT)
+//                    .sendKeys(keys.get(15)).keyDown(Keys.SHIFT).sendKeys(Keys.ENTER).keyUp(Keys.SHIFT)
+//                    .sendKeys(keys.get(16)).keyDown(Keys.SHIFT).sendKeys(Keys.ENTER).keyUp(Keys.SHIFT)
+//                    .sendKeys(keys.get(17)).keyDown(Keys.SHIFT).sendKeys(Keys.ENTER).keyUp(Keys.SHIFT)
+//                    .sendKeys(keys.get(18)).keyDown(Keys.SHIFT).sendKeys(Keys.ENTER).keyUp(Keys.SHIFT)
+//                    .sendKeys(keys.get(19)).keyDown(Keys.SHIFT).sendKeys(Keys.ENTER).keyUp(Keys.SHIFT)
+                    .sendKeys(Keys.ENTER)
+                    .perform();
+
+            By closeBtn = By.xpath("//div[@role='button' and .//text()='Close']");
+            WebElement close = wait.until(ExpectedConditions.visibilityOfElementLocated(closeBtn));
+            wait.until(ExpectedConditions.elementToBeClickable(close));
+            close.click();
+        }
     }
 }
