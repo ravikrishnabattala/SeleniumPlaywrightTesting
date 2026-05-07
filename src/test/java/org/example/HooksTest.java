@@ -44,15 +44,15 @@ public class HooksTest {
         System.out.println("Junit before run...");
 //        initiateBrowsers();
         TestInfo testInfo = null;
-        setUp(testInfo);
+//        setUp(testInfo);
     }
 
     @Before
     public void cucumberBeforeHook(Scenario scenario) {
         System.out.println("Cucumber before run...");
-//        initiateBrowsers();
+        initiateBrowsers();
         TestInfo testInfo = null;
-        setUp(testInfo);
+//        setUp(testInfo);
     }
 
     public static void initiateBrowsers() {
@@ -73,6 +73,7 @@ public class HooksTest {
             contextOptions.setViewportSize(null);
 //            contextOptions.setStorageStatePath(Paths.get("insta_state.json"));
             contextOptions.setStorageStatePath(Paths.get("naukri_cookies.json"));
+//            contextOptions.setStorageStatePath(Paths.get("linkedin_cookies.json"));
             context = browser.newContext(contextOptions);
             context.tracing().start(new Tracing.StartOptions()
                     .setScreenshots(true)
@@ -93,8 +94,12 @@ public class HooksTest {
         }
         try {
             ChromeOptions options = new ChromeOptions();
+//            options.addArguments("--headless=new");
+//            options.addArguments("--incognito");
             ChromeDriverService service = new ChromeDriverService.Builder().usingAnyFreePort().build();
 //        options.setBrowserVersion("latest");
+            options.setAcceptInsecureCerts(true);
+            options.setExperimentalOption("excludeSwitches",new String[]{"enable-automation"});
             options.setPageLoadStrategy(PageLoadStrategy.NORMAL);
             Duration duration = Duration.of(2, ChronoUnit.SECONDS);
 //        Proxy proxy = new Proxy();

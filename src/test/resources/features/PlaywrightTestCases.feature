@@ -18,7 +18,7 @@ Feature: Run testcases of playwright
     Given Login to Linkedin username='<username>' & password='<passcode>'
     Examples:
       | username                          | passcode |
-      | ravikrishna.b_cse2019@svce.edu.in | #####    |
+      | ravikrishnabattala5@gmail.com     | #####    |
 
 
   Scenario: Apply for Jobs
@@ -30,8 +30,11 @@ Feature: Run testcases of playwright
 
     Examples:
       | username                          | passcode |
-      | ravikrishna.b_cse2019@svce.edu.in | #####    |
+      | ravikrishnabattala5@gmail.com     | #####    |
 
 
   Scenario: Apply Jobs
     Given Apply naukri jobs
+
+  Scenario: Share Interest
+    Given Share Interest to Job

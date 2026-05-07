@@ -7,6 +7,8 @@ import io.cucumber.java.en.Then;
 import net.bytebuddy.asm.Advice;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
@@ -16,6 +18,8 @@ import org.slf4j.MDC;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -96,6 +100,14 @@ public class SeleniumTest {
             driver.manage().addCookie(cookie);
         }
         driver.navigate().refresh();
+//        TakesScreenshot takesScreenshot = (TakesScreenshot) driver;
+//        File sourceFile = takesScreenshot.getScreenshotAs(OutputType.FILE);
+//        File targetFile = new File("D:\\Eclipse-workspace\\SeleniumPlaywrightTesting\\src\\test\\resources\\test.png");
+//        sourceFile.renameTo(targetFile);
+//        URL url = new URL("");
+//        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+//        httpURLConnection.connect();
+//        httpURLConnection.getResponseCode();
     }
 
     @Given("Send message {string} to user {string} on instagram")

@@ -1,14 +1,19 @@
 package org.example;
 
 import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.AriaRole;
 import io.cucumber.java.an.E;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import jdk.jfr.Description;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.How;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -237,12 +242,23 @@ public class PlaywrightTest {
         for (int i = 0; i < jobIds.size(); i++) {
             String jobId = (String) jobIds.get(i);
             Page newPage = browserContext.waitForPage(() -> {
-                    page.locator("article[data-job-id='" + jobId + "']").click();
+                page.locator("article[data-job-id='" + jobId + "']").click();
             });
 
-            continueToNext("#apply-button",newPage);
+            continueToNext("#apply-button", newPage);
             newPage.close();
         }
+    }
+
+    @Given("Share Interest to Job")
+    public void shareInterest() {
+        page.navigate("https://www.naukri.com/mnjuser/recommended-earjobs");
+        Locator shareInterestBtn = page.locator("text=Share interest");
+        while (shareInterestBtn.count() > 0) {
+            shareInterestBtn.first().click();
+            shareInterestBtn = page.locator("text=Share interest");
+        }
+
     }
 
 }
