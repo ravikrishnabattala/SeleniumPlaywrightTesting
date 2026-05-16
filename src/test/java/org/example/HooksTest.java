@@ -4,7 +4,7 @@ import com.microsoft.playwright.*;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.TestInfo;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.Point;
@@ -26,45 +26,40 @@ import java.util.Map;
 
 public class HooksTest {
 
-    private static Playwright playwright;
-    private static Browser browser;
-    private static BrowserContext context;
-    private static Page page;
-    private static WebDriver driver;
+    private static final ThreadLocal<Playwright> playwright = new ThreadLocal<>();
+    private static final ThreadLocal<Browser> browser = new ThreadLocal<>();
+    private static final ThreadLocal<BrowserContext> context = new ThreadLocal<>();
+    private static final ThreadLocal<Page> page = new ThreadLocal<>();
+    private static final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
     private static final Logger logger = LoggerFactory.getLogger(HooksTest.class);
-
-    @BeforeAll
-    @io.cucumber.java.BeforeAll
-    public static void beforeAllHook() {
-        System.out.println("Junit & Cucumber Before All run...");
-    }
-
-    @BeforeEach
-    public void junitBeforeHook() {
-        System.out.println("Junit before run...");
-//        initiateBrowsers();
-        TestInfo testInfo = null;
-//        setUp(testInfo);
-    }
 
     @Before
     public void cucumberBeforeHook(Scenario scenario) {
         System.out.println("Cucumber before run...");
-        initiateBrowsers();
+//        initiateBrowsers();
         TestInfo testInfo = null;
-//        setUp(testInfo);
+        setUp(testInfo);
     }
 
     public static void initiateBrowsers() {
         logger.info("Initializing Playwright...");
         try {
+            System.out.println(
+                    "Launching Browser On Thread -> "
+                            + Thread.currentThread().getName()
+            );
             BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions();
             launchOptions.setHeadless(false);
             launchOptions.setSlowMo(100);
-            playwright = Playwright.create();
-            browser = playwright.chromium().launch(launchOptions);
+//            launchOptions.setChannel("chrome");
+            playwright.set(Playwright.create());
+            browser.set(
+                    playwright.get()
+                            .chromium()
+                            .launch(launchOptions)
+            );
 
-            Map headers = new HashMap();
+            Map<String, String> headers = new HashMap<>();
             headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
             headers.put("Accept-Language", "en-US,en;q=0.9");
 
@@ -74,11 +69,15 @@ public class HooksTest {
 //            contextOptions.setStorageStatePath(Paths.get("insta_state.json"));
             contextOptions.setStorageStatePath(Paths.get("naukri_cookies.json"));
 //            contextOptions.setStorageStatePath(Paths.get("linkedin_cookies.json"));
-            context = browser.newContext(contextOptions);
-            context.tracing().start(new Tracing.StartOptions()
+            context.set(
+                    browser.get().newContext(contextOptions)
+            );
+            context.get().tracing().start(new Tracing.StartOptions()
                     .setScreenshots(true)
                     .setSnapshots(true));
-            page = context.newPage();
+            page.set(
+                    context.get().newPage()
+            );
             logger.info("Playwright initialized successfully.");
         } catch (Exception e) {
             logger.error("Error initializing Playwright", e);
@@ -89,8 +88,12 @@ public class HooksTest {
 
     public void setUp(TestInfo testInfo) {
         logger.info("Initializing Selenium WebDriver...");
-        if (driver != null) {
-            driver.quit();
+        System.out.println(
+                "Launching Browser On Thread -> "
+                        + Thread.currentThread().getName()
+        );
+        if (driver.get() != null) {
+            driver.get().quit();
         }
         try {
             ChromeOptions options = new ChromeOptions();
@@ -99,7 +102,8 @@ public class HooksTest {
             ChromeDriverService service = new ChromeDriverService.Builder().usingAnyFreePort().build();
 //        options.setBrowserVersion("latest");
             options.setAcceptInsecureCerts(true);
-            options.setExperimentalOption("excludeSwitches",new String[]{"enable-automation"});
+            options.addArguments("--disable-blink-features=AutomationControlled");
+            options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});
             options.setPageLoadStrategy(PageLoadStrategy.NORMAL);
             Duration duration = Duration.of(2, ChronoUnit.SECONDS);
 //        Proxy proxy = new Proxy();
@@ -107,10 +111,12 @@ public class HooksTest {
 //        options.setProxy(proxy);
             ClientConfig config = ClientConfig.defaultConfig();
             options.setScriptTimeout(duration);
-            driver = new ChromeDriver(service,options,config);
-            driver.manage().window().setPosition(new Point(0, 0));
-            driver.manage().window().setSize(new Dimension(1920, 1080));
-            logger.info("Selenium WebDriver started. Window Handle: {}", driver.getWindowHandle());
+            driver.set(
+                    new ChromeDriver(service, options, config)
+            );
+            driver.get().manage().window().setPosition(new Point(0, 0));
+            driver.get().manage().window().setSize(new Dimension(1920, 1080));
+            logger.info("Selenium WebDriver started. Window Handle: {}", driver.get().getWindowHandle());
             if (testInfo != null && !testInfo.getTags().isEmpty()) {
                 MDC.put("testCaseId", testInfo.getTags().iterator().next());
             } else {
@@ -125,48 +131,67 @@ public class HooksTest {
     }
 
     public static Page getPage() {
-        return page;
+        return page.get();
     }
 
     public static WebDriver getDriver() {
-        return driver;
+        return driver.get();
     }
 
     public static BrowserContext getContext() {
-        return context;
+        return context.get();
     }
 
     public static Browser getBrowser() {
-        return browser;
+        return browser.get();
     }
 
-    public Playwright getPlaywright() {
-        return playwright;
+    public static Playwright getPlaywright() {
+        return playwright.get();
     }
 
-    @AfterEach
     @After
-    public void afterExecuteHook() throws InterruptedException {
-        Thread.sleep(3000);
-        System.out.println("Cucumber & Junit After each run... " + MDC.get("testCaseId"));
-        MDC.clear();
-        if (driver != null) {
-            driver.quit();
-            logger.info("Quiting Driver!!!");
-            driver = null;
+    public void afterExecuteHook(Scenario scenario) {
+        try {
+            System.out.println(
+                    "Closing Thread -> "
+                            + Thread.currentThread().getName()
+            );
+            MDC.clear();
+            Paths.get("traces").toFile().mkdirs();
+            String traceName =
+                    scenario.getName()
+                            .replace(" ", "_")
+                            + "_"
+                            + System.currentTimeMillis()
+                            + ".zip";
+            if (page.get() != null) {
+                page.get().close();
+            }
+            if (context.get() != null) {
+                context.get().tracing().stop(
+                        new Tracing.StopOptions()
+                                .setPath(
+                                        Paths.get("traces/" + traceName)
+                                )
+                );
+                context.get().close();
+            }
+            if (browser.get() != null) {
+                browser.get().close();
+            }
+            if (playwright.get() != null) {
+                playwright.get().close();
+            }
+            if (driver.get() != null) {
+                driver.get().quit();
+            }
+        } finally {
+            page.remove();
+            context.remove();
+            browser.remove();
+            playwright.remove();
+            driver.remove();
         }
-    }
-
-    @AfterAll
-    @io.cucumber.java.AfterAll
-    public static void shutDownBrowsersHook() {
-        System.out.println("Cucumber & Junit After all run...");
-        logger.info("Web Driver Removed");
-        page.close();
-        context.tracing().stop(new Tracing.StopOptions()
-                .setPath(Paths.get("trace.zip")));
-        context.close();
-        browser.close();
-        playwright.close();
     }
 }

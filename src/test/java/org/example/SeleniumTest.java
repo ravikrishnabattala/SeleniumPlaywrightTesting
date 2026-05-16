@@ -1,14 +1,9 @@
 package org.example;
 
-import com.google.gson.internal.bind.util.ISO8601Utils;
-import com.microsoft.playwright.Keyboard;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import net.bytebuddy.asm.Advice;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
@@ -18,26 +13,23 @@ import org.slf4j.MDC;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 public class SeleniumTest {
 
     private static final Logger logger = LoggerFactory.getLogger(SeleniumTest.class);
-    private static WebDriver driver;
-    WebDriverWait wait;// Wait for up to 15 seconds
-    JavascriptExecutor js;
+    private WebDriver driver;
+    private WebDriverWait wait;// Wait for up to 15 seconds
+    private JavascriptExecutor js;
 
     public SeleniumTest() {
         System.out.println("Selenium constructor...");
-        driver = HooksTest.getDriver();
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        js = (JavascriptExecutor) driver;
+        this.driver = HooksTest.getDriver();
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        this.js = (JavascriptExecutor) driver;
     }
 
     public void waiting(int seconds) {
@@ -367,4 +359,34 @@ public class SeleniumTest {
             close.click();
         }
     }
+
+    @Given("Login to Glassdoor")
+    public void loginToGlassdoor() throws IOException, ClassNotFoundException {
+        driver.get("https://www.glassdoor.co.in/Community/index.htm");
+
+//        Set<Cookie> cookies= driver.manage().getCookies();
+//        FileOutputStream fileOutputStream = new FileOutputStream("glassdoor_cookies.data");
+//        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+//        objectOutputStream.writeObject(cookies);
+//        objectOutputStream.close();
+
+        ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream("glassdoor_cookies.data"));
+        Set<Cookie> cookies = (Set<Cookie>) objectInputStream.readObject();
+        objectInputStream.close();
+        for (Cookie cookie : cookies) {
+            driver.manage().addCookie(cookie);
+        }
+        driver.navigate().refresh();
+        waiting(15);
+
+        By jobsLink = By.xpath("//li[@data-test='site-header-jobs']//a[contains(text(),'Jobs')]");
+        WebElement jobsBtn = wait.until(ExpectedConditions.elementToBeClickable(jobsLink));
+        js.executeScript("arguments[0].click()", jobsBtn);
+
+        By easyApply = By.xpath("//div[@class='JobDetails_applyButtonContainer__L36Bs']//button[@type='button']");
+        WebElement easyApplyBtn = wait.until(ExpectedConditions.elementToBeClickable(easyApply));
+        js.executeScript("arguments[0].click()", easyApplyBtn);
+        waiting(60);
+    }
+
 }

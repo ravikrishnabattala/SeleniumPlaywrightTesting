@@ -32,5 +32,12 @@ Feature: Run testcases of Selenium
     Then Comment '<user>' post with '<message>'
 
     Examples:
-      | user    | message     |
-      | user    | message     |
+      | user | message |
+      | user | message |
+
+
+  Scenario Outline: Apply jobs on Glassdoor
+    Given Login to Glassdoor
+    Examples:
+      | user | password |
+      | a    | b        |
