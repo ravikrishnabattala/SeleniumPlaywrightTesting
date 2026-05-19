@@ -1872,4 +1872,348 @@ public class LoginApplications {
         }
     }
 
+    @Given("OTP from Meatigo {string}")
+    public void meatigo(String phoneNumber) {
+        try {
+            page.navigate("https://www.meatigo.com/");
+            page.locator(".promo-container.category > button").click();
+            page.locator("a[href*='login'], button:has-text('Login'), button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[name*='phone'], input[placeholder*='phone']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from BB Daily {string}")
+    public void bbDaily(String phoneNumber) {
+        try {
+            page.navigate("https://www.bigbasket.com/");
+            page.locator("a[href*='login'], button:has-text('Login')").first().click();
+            page.locator("input[type='tel'], input[placeholder*='Mobile']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Supr Daily {string}")
+    public void suprDaily(String phoneNumber) {
+        try {
+            page.navigate("https://www.suprdaily.com/");
+            page.locator("a[href*='login'], button:has-text('Login'), button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[placeholder*='phone'], input[placeholder*='mobile']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Ninjacart {string}")
+    public void ninjacart(String phoneNumber) {
+        try {
+            page.navigate("https://www.ninjacart.com/");
+            page.locator("a[href*='login'], button:has-text('Login')").first().click();
+            page.locator("input[type='tel'], input[placeholder*='Mobile'], input[placeholder*='Phone']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Zappfresh {string}")
+    public void zappfresh(String phoneNumber) {
+        try {
+            page.navigate("https://www.zappfresh.com/");
+            page.locator("a[href*='login'], button:has-text('Login'), button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[name*='mobile'], input[placeholder*='Mobile']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Milkbasket {string}")
+    public void milkbasket(String phoneNumber) {
+        try {
+            page.navigate("https://www.milkbasket.com/");
+            page.locator("a[href*='login'], button:has-text('Login')").first().click();
+            page.locator("input[type='tel'], input[placeholder*='Mobile'], input[placeholder*='phone']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Bounce {string}")
+    public void bounce(String phoneNumber) {
+        try {
+            page.navigate("https://www.bounceshare.com/");
+            page.locator("a[href*='login'], button:has-text('Login'), button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[placeholder*='Mobile'], input[placeholder*='Phone']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Yulu {string}")
+    public void yulu(String phoneNumber) {
+        try {
+            page.navigate("https://www.yulu.bike/");
+            page.locator("a[href*='login'], button:has-text('Login'), button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[placeholder*='Mobile'], input[placeholder*='Phone']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Vogo {string}")
+    public void vogo(String phoneNumber) {
+        try {
+            page.navigate("https://www.vogo.in/");
+            page.locator("a[href*='login'], button:has-text('Login'), button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[placeholder*='Mobile'], input[placeholder*='Phone']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ─── EdTech ──────────────────────────────────────────────────────────────────
+
+    @Given("OTP from Shaw Academy {string}")
+    public void shawAcademy(String phoneNumber) {
+        try {
+            page.navigate("https://www.shawacademy.com/");
+            page.locator("a[href*='login'], a[href*='signup'], button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[name*='phone'], input[placeholder*='Phone']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Medlife {string}")
+    public void medlife(String phoneNumber) {
+        try {
+            page.navigate("https://www.medlife.com/");
+            page.locator("a[href*='login'], button:has-text('Login'), button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[placeholder*='Mobile'], input[placeholder*='Phone']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from DocPrime {string}")
+    public void docPrime(String phoneNumber) {
+        try {
+            page.navigate("https://www.docprime.com/");
+            page.locator("a[href*='login'], button:has-text('Login'), button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[placeholder*='Mobile'], input[placeholder*='Phone']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Tata Health {string}")
+    public void tataHealth(String phoneNumber) {
+        try {
+            page.navigate("https://www.tatahealth.com/");
+            page.locator("a[href*='login'], button:has-text('Login'), button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[placeholder*='Mobile'], input[placeholder*='Phone']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Chingari {string}")
+    public void chingari(String phoneNumber) {
+        try {
+            page.navigate("https://chingari.io/");
+            page.locator("a[href*='login'], button:has-text('Login'), button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[placeholder*='Mobile'], input[placeholder*='Phone']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Roposo {string}")
+    public void roposo(String phoneNumber) {
+        try {
+            page.navigate("https://www.roposo.com/");
+            page.locator("a[href*='login'], button:has-text('Login'), button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[placeholder*='Mobile'], input[placeholder*='Phone']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from MX TakaTak {string}")
+    public void mxTakaTak(String phoneNumber) {
+        try {
+            page.navigate("https://www.mxtakatak.com/");
+            page.locator("a[href*='login'], button:has-text('Login'), button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[placeholder*='Mobile'], input[placeholder*='Phone']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Mitron {string}")
+    public void mitron(String phoneNumber) {
+        try {
+            page.navigate("https://www.mitron.tv/");
+            page.locator("a[href*='login'], button:has-text('Login'), button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[placeholder*='Mobile'], input[placeholder*='Phone']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Clubhouse {string}")
+    public void clubhouse(String phoneNumber) {
+        try {
+            page.navigate("https://www.joinclubhouse.com/");
+            page.locator("button:has-text('Sign Up'), a[href*='signup']").first().click();
+            page.locator("input[type='tel'], input[placeholder*='phone']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Doorstep {string}")
+    public void doorstep(String phoneNumber) {
+        try {
+            page.navigate("https://www.doorstep.co.in/");
+            page.locator("a[href*='login'], button:has-text('Login'), button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[placeholder*='Mobile'], input[placeholder*='Phone']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ─── Gaming / Entertainment ──────────────────────────────────────────────────
+
+    @Given("OTP from Zupee {string}")
+    public void zupee(String phoneNumber) {
+        try {
+            page.navigate("https://www.zupee.com/");
+            page.locator("a[href*='login'], button:has-text('Login'), button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[placeholder*='Mobile'], input[placeholder*='Phone']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Hago {string}")
+    public void hago(String phoneNumber) {
+        try {
+            page.navigate("https://www.hago.me/");
+            page.locator("a[href*='login'], button:has-text('Login'), button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[placeholder*='Mobile'], input[placeholder*='Phone']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Loco {string}")
+    public void loco(String phoneNumber) {
+        try {
+            page.navigate("https://loco.gg/");
+            page.locator("a[href*='login'], button:has-text('Login'), button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[placeholder*='Mobile'], input[placeholder*='Phone']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from BSNL {string}")
+    public void bsnl(String phoneNumber) {
+        try {
+            page.navigate("https://selfcare.bsnl.co.in/");
+            page.locator("a[href*='login'], button:has-text('Login')").first().click();
+            page.locator("input[type='tel'], input[name*='mobile'], input[placeholder*='Mobile']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from BESCOM {string}")
+    public void bescom(String phoneNumber) {
+        try {
+            page.navigate("https://bescom.karnataka.gov.in/");
+            page.locator("a[href*='login'], button:has-text('Login')").first().click();
+            page.locator("input[type='tel'], input[name*='mobile'], input[placeholder*='Mobile']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ─── Fintech / NearBy Services ───────────────────────────────────────────────
+
+    @Given("OTP from PayNearby {string}")
+    public void payNearby(String phoneNumber) {
+        try {
+            page.navigate("https://www.paynearby.in/");
+            page.locator("a[href*='login'], button:has-text('Login'), button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[name*='mobile'], input[placeholder*='Mobile']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Spice Money {string}")
+    public void spiceMoney(String phoneNumber) {
+        try {
+            page.navigate("https://www.spicemoney.com/");
+            page.locator("a[href*='login'], button:has-text('Login'), button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[name*='mobile'], input[placeholder*='Mobile']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ─── Logistics / Delivery ────────────────────────────────────────────────────
+
+    @Given("OTP from Borzo {string}")
+    public void borzo(String phoneNumber) {
+        try {
+            page.navigate("https://borzodelivery.com/in");
+            page.locator("a[href*='login'], a[href*='signup'], button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[name*='phone'], input[placeholder*='Phone']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Wefast {string}")
+    public void wefast(String phoneNumber) {
+        try {
+            page.navigate("https://wefast.com/in");
+            page.locator("a[href*='login'], a[href*='signup'], button:has-text('Sign Up')").first().click();
+            page.locator("input[type='tel'], input[name*='phone'], input[placeholder*='Phone']").first().fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
