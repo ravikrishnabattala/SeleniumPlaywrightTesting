@@ -1,14 +1,14 @@
 package org.example;
 
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserContext;
-import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.Page;
+import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.BoundingBox;
 import io.cucumber.java.en.Given;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Random;
+import java.util.regex.Pattern;
 
 public class LoginApplications {
     private Browser browser;
@@ -35,7 +35,6 @@ public class LoginApplications {
             synchronized (page) {
                 page.wait(seconds * 1000L);
             }
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -48,7 +47,6 @@ public class LoginApplications {
             page.navigate("https://www.flipkart.com/");
             page.locator("form").filter(new Locator.FilterOptions().setHasText("Enter Email/Mobile number")).getByRole(AriaRole.TEXTBOX).type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Request OTP")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -63,7 +61,8 @@ public class LoginApplications {
             page.locator(".mobileNumberInput").type(phoneNumber);
             page.getByRole(AriaRole.CHECKBOX).and(page.locator(".consentCheckbox")).click();
             page.getByText("CONTINUE").click();
-            page.waitForTimeout(3000);
+            waiting(35);
+            page.getByText("CONTINUE").click();
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -77,7 +76,6 @@ public class LoginApplications {
             page.navigate("https://www.ajio.com/login");
             page.getByLabel("Enter 10 digit mobile number. It should not start with 0 or plus 91").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -89,11 +87,10 @@ public class LoginApplications {
         try {
             // Amazon Login
             page.navigate("https://www.amazon.in");
-            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue shopping")).click();
             page.getByText("Hello, sign in").click();
             page.getByLabel("Enter mobile number or email").type("+91" + phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("CONTINUE")).click();
-            page.waitForTimeout(3000);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign in with an OTP")).click();
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -108,7 +105,6 @@ public class LoginApplications {
             page.locator("input[type='tel']").click();
             page.locator("input[type='tel']").fill(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -126,7 +122,6 @@ public class LoginApplications {
             page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Name")).type("Satya");
             page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Password")).type("Test@1269");
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("continue")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -140,7 +135,6 @@ public class LoginApplications {
             page.navigate("https://www.nykaa.com/auth/login");
             page.getByLabel("Mobile Number").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Get OTP")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -154,7 +148,6 @@ public class LoginApplications {
             page.navigate("https://www.tatacliq.com/login");
             page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Mobile Number")).fill(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -165,12 +158,11 @@ public class LoginApplications {
     public void Pepperfry(String phoneNumber) {
         try {
             // Pepperfry
-            page.navigate("https://www.pepperfry.com/site_login");
-            page.getByText("Sign Up Now").click();
-            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("LOGIN/SIGNUP")).click();
+            page.navigate("https://www.pepperfry.com");
+//            page.getByText("Sign Up Now").click();
+//            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("LOGIN/SIGNUP")).click();
             page.getByPlaceholder("Enter Mobile Number or Email Id").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("CONTINUE")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -187,7 +179,6 @@ public class LoginApplications {
             page.getByPlaceholder("Full Name*").type("Satya");
             page.getByPlaceholder("Email Id*").type("satyarushi@gamil.com");
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("GET OTP")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
             e.printStackTrace();
@@ -204,7 +195,6 @@ public class LoginApplications {
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign in/Sign up")).click();
             page.getByPlaceholder("Mobile / Email").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign In")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -219,7 +209,6 @@ public class LoginApplications {
             page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Sign in")).click();
             page.locator("#central-login-module-sign-mobile").nth(1).type(phoneNumber);
             page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Sign in with OTP")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -240,7 +229,6 @@ public class LoginApplications {
             page.getByLabel("Account Details").click();
             page.getByLabel("Enter your Mobile Number").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(" Proceed ")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -262,7 +250,6 @@ public class LoginApplications {
             cont.click();
             cont.click();
             cont.click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -275,7 +262,6 @@ public class LoginApplications {
             page.navigate("https://www.vijaysales.com/login");
             page.getByLabel("Email ID or Mobile Number").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -292,7 +278,6 @@ public class LoginApplications {
             page.locator("input[name='firstName']").type("Satya");
             page.locator("input[name='lastName']").type("Senthil");
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("SAVE AND CONTINUE")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -306,7 +291,6 @@ public class LoginApplications {
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Login/ Sign Up")).click();
             page.getByPlaceholder("Enter Phone number/ Email Id").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -319,7 +303,6 @@ public class LoginApplications {
             page.navigate("https://blinkit.com/account");
             page.getByPlaceholder("Enter mobile number").type(phoneNumber);
             page.getByText("Continue").click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -333,7 +316,6 @@ public class LoginApplications {
             page.getByLabel("login").click();
             page.getByPlaceholder("Enter Phone Number").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -346,7 +328,6 @@ public class LoginApplications {
             page.navigate("https://www.jio.com/selfcare/login");
             page.getByLabel("Mobile Number").type(phoneNumber);
             page.getByLabel("Generate OTP").click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -361,7 +342,6 @@ public class LoginApplications {
             page.getByPlaceholder("+91 Enter 10 digit mobile number").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("CONFIRM")).click();
 
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -375,7 +355,6 @@ public class LoginApplications {
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign in with mobile")).click();
             page.getByTestId("phone-number").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -388,7 +367,6 @@ public class LoginApplications {
             page.navigate("https://www.temu.com/login.html");
             page.getByLabel("Email or phone number").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue").setExact(true)).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -435,11 +413,10 @@ public class LoginApplications {
     public void ShoppersStop(String phoneNumber) {
         try {
             //ShoppersStop
-            page.navigate("https://www.shoppersstop.com/");
-            page.locator("[id='radix-\\:Rlll6d6\\:'] > svg").first().click();
+            page.navigate("https://www.shoppersstop.com");
+            page.locator("[id='radix-:Rlll6d6:'] > svg").first().click();
             page.getByPlaceholder("Enter your Mobile Number").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -478,7 +455,6 @@ public class LoginApplications {
             page.navigate("https://www.bewakoof.com/login");
             page.getByPlaceholder("Enter Mobile Number").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("CONTINUE")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -515,7 +491,6 @@ public class LoginApplications {
             page.getByLabel("Email / Phone").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Proceed")).click();
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP to Mobile")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -554,7 +529,6 @@ public class LoginApplications {
             page.navigate("https://in.sugarcosmetics.com/account/login");
             page.frameLocator("#iframe-kp").getByPlaceholder("Phone number").click();
             page.frameLocator("#iframe-kp").getByPlaceholder("Phone number").type(phoneNumber);
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -566,7 +540,6 @@ public class LoginApplications {
             // Boat
             page.navigate("https://www.boat-lifestyle.com/account/login");
             page.frameLocator("#iframe-kp").getByPlaceholder("Enter Mobile Number").type(phoneNumber);
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -577,9 +550,8 @@ public class LoginApplications {
         try {
             // Apple
             page.navigate("https://appleid.apple.com/sign-in");
-            page.getByLabel("Email or Phone Number").type(phoneNumber);
-            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
-            page.waitForTimeout(3000);
+            page.frameLocator("iframe[name='aid-auth-widget']").getByLabel("Email or Phone Number").fill(phoneNumber);
+            page.frameLocator("iframe[name='aid-auth-widget']").getByRole(AriaRole.BUTTON, new FrameLocator.GetByRoleOptions().setName("Continue")).click();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -590,10 +562,11 @@ public class LoginApplications {
         try {
             // Oppo
             page.navigate("https://id.oppo.com/v3/auth/login");
-            page.getByText("Phone").click();
-            page.getByPlaceholder("Phone number").type(phoneNumber);
-            page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Use verification code")).click();
-            page.waitForTimeout(3000);
+            page.getByLabel("Phone").getByLabel("third_party_icon").click();
+            page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Phone number")).click();
+            page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Phone number")).fill("8309930363");
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Use verification code")).click();
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Get code")).click();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -604,9 +577,9 @@ public class LoginApplications {
         try {
             // Puma
             page.navigate("https://in.puma.com/in/en/account/login?from=account");
-            page.getByPlaceholder("Phone").type(phoneNumber);
+            page.getByPlaceholder("Phone").clear();
+            page.getByPlaceholder("Phone").type("+91" + phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Get OTP")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -618,8 +591,7 @@ public class LoginApplications {
             // Reebok
             page.navigate("https://www.reebok.in/login");
             page.getByPlaceholder("Enter 10 digit mobile number").type(phoneNumber);
-            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("GET OTP")).click();
-            page.waitForTimeout(3000);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("GET OTP").setExact(true)).click();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -630,11 +602,11 @@ public class LoginApplications {
         try {
             // Decathlon
             page.navigate("https://www.decathlon.in/login");
-            page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Sign In")).click();
-            page.getByText("Phone number").click();
-            page.getByLabel("Mobile phone number").type(phoneNumber);
+            page.locator("[data-test-id='header-desktop-Sign In\\:link']").click();
+            page.getByLabel("Phone number").click();
+            page.getByPlaceholder("Mobile phone number").click();
+            page.getByPlaceholder("Mobile phone number").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Next")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -647,7 +619,6 @@ public class LoginApplications {
             page.navigate("https://in.urbanic.com/register");
             page.getByPlaceholder("Mobile Number").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Get OTP")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -660,7 +631,6 @@ public class LoginApplications {
             page.navigate("https://www.ikea.com/in/en/profile/login");
             page.getByText("Email or Verified Mobile Number").type(phoneNumber);
             page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("with an OTP")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -671,11 +641,10 @@ public class LoginApplications {
         try {
             //UrbanLadder
             page.navigate("https://www.urbanladder.com/login");
-            page.getByLabel("Open account menu").click();
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Open account menu")).click();
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign In")).click();
             page.getByPlaceholder("Enter 10-digit Mobile Number").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -688,7 +657,6 @@ public class LoginApplications {
             page.navigate("https://www.wakefit.co/login");
             page.getByPlaceholder("Mobile Number").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Get OTP")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -699,9 +667,8 @@ public class LoginApplications {
         try {
             // Zomato
             page.navigate("https://www.zomato.com/login");
-            page.getByPlaceholder("Phone").type(phoneNumber);
-            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send One Time Password")).click();
-            page.waitForTimeout(3000);
+            page.frameLocator("#auth-login-ui").getByPlaceholder("Phone").type(phoneNumber);
+            page.frameLocator("#auth-login-ui").getByRole(AriaRole.BUTTON, new FrameLocator.GetByRoleOptions().setName("Send One Time Password")).click();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -712,9 +679,9 @@ public class LoginApplications {
         try {
             // Uber
             page.navigate("https://auth.uber.com/login");
-            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Enter phone number or email")).type(phoneNumber);
-            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
-            page.waitForTimeout(3000);
+            page.locator("#phone-number-or-email-input-container").click();
+            page.getByPlaceholder("Enter phone number or email").type(phoneNumber);
+            page.getByTestId("forward-button").click();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -724,10 +691,13 @@ public class LoginApplications {
     public void Ola(String phoneNumber) {
         try {
             // Ola
-            page.navigate("https://accounts.olacabs.com");
-            page.locator("#phone-number").type(phoneNumber);
-            page.getByText("Next").click();
-            page.waitForTimeout(3000);
+            page.navigate("https://olacorporate.olacabs.com/login");
+            page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Log in with OTP")).click();
+            page.locator("#country").selectOption("INDIA");
+            page.getByPlaceholder("Enter Mobile No.").click();
+            page.locator("input[name=\"mobile\"]").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Get OTP")).click();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -739,8 +709,7 @@ public class LoginApplications {
             // Airbnb
             page.navigate("https://www.airbnb.com/login");
             page.getByLabel("Phone number or email").type(phoneNumber);
-            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
-            page.waitForTimeout(3000);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue").setExact(true)).click();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -750,10 +719,9 @@ public class LoginApplications {
     public void OYO(String phoneNumber) {
         try {
             // OYO
-            page.navigate("https://www.oyorooms.com/login");
-            page.getByLabel("Enter Phone Number").type(phoneNumber);
+            page.navigate("https://www.oyorooms.com/login/?country=&retUrl=%2F");
+            page.getByLabel("input").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Verify Number")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -766,7 +734,6 @@ public class LoginApplications {
             page.navigate("https://www.makemytrip.com/login");
             page.getByPlaceholder("Enter Mobile Number").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -778,7 +745,6 @@ public class LoginApplications {
             // Goibibo
             page.navigate("https://www.goibibo.com/login");
             page.locator("[type='text'][name='phone']").type(phoneNumber);
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -790,9 +756,8 @@ public class LoginApplications {
             // Yatra
             page.navigate("https://www.yatra.com");
             page.getByText("Login / Signup").click();
-            page.getByLabel("Email Id / Mobile Number").type(phoneNumber);
-            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Login")).click();
-            page.waitForTimeout(3000);
+            page.getByLabel("Email Id / Mobile Number").fill(phoneNumber);
+            page.getByText("Login", new Page.GetByTextOptions().setExact(true)).click();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -803,10 +768,9 @@ public class LoginApplications {
         try {
             // leartrip
             page.navigate("https://www.cleartrip.com");
-            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Log in")).click();
-            page.getByPlaceholder("Enter mobile number").type(phoneNumber);
+//            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Log in")).click();
+            page.getByPlaceholder("Enter mobile number").first().type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Get OTP")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -816,11 +780,10 @@ public class LoginApplications {
     public void BookMyShow(String phoneNumber) {
         try {
             // BookMyShow
-            page.navigate("https://in.bookmyshow.com/explore/login");
+            page.navigate("https://in.bookmyshow.com");
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign in")).click();
             page.getByPlaceholder("Continue with mobile number").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -830,13 +793,11 @@ public class LoginApplications {
     public void RedBus(String phoneNumber) {
         try {
             // RedBus
-            page.navigate("https://www.redbus.in/login");
+            page.navigate("https://www.redbus.in");
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Account")).click();
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Log in")).click();
-            page.getByLabel("Mobile number").type(phoneNumber);
+            page.locator("input[type='tel']").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
-            page.getByText("I'm not a robot").click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -848,7 +809,6 @@ public class LoginApplications {
             // Dominos
             page.navigate("https://pizzaonline.dominos.co.in/login");
             page.getByTestId("user-input").type(phoneNumber);
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -861,7 +821,6 @@ public class LoginApplications {
             page.navigate("https://mcdelivery.co.in/auth-with-otp");
             page.getByPlaceholder("10 Digit Mobile Number").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Verify Mobile")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -871,12 +830,14 @@ public class LoginApplications {
     public void UrbanCompany(String phoneNumber) {
         try {
             // UrbanCompany
-            page.navigate("https://www.urbancompany.com/login");
-            page.locator(".css-175oi2r").click();
+//            page.navigate("https://www.urbancompany.com/login");
+            page.navigate("https://www.urbancompany.com");
+            Locator p = page.locator("#rightButtonStack").getByRole(AriaRole.BUTTON, new Locator.GetByRoleOptions().setName("Button Double Tap to perform")).nth(1);
+            p.click();
+            p.click();
             page.getByText("Login").click();
             page.getByPlaceholder("Enter your phone number").type(phoneNumber);
             page.getByText("Continue").click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -887,10 +848,8 @@ public class LoginApplications {
         try {
             // NoBroker
             page.navigate("https://www.nobroker.in/login");
-            page.getByText("Sign up").click();
+            page.locator("#navHeader").getByText("Sign up").click();
             page.getByPlaceholder("Enter Mobile Number").type(phoneNumber);
-            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -900,11 +859,11 @@ public class LoginApplications {
     public void acres(String phoneNumber) {
         try {
             // 99acres
-            page.navigate("https://www.99acres.com/login");
-            page.getByText("LOGIN / REGISTER").click();
+            page.navigate("https://www.99acres.com");
+            page.locator(".pageComponent > div:nth-child(2) > div:nth-child(5)").hover();
+            page.getByText("LOGIN / REGISTER").first().click();
             page.locator("[title='Phone Number']").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -918,7 +877,6 @@ public class LoginApplications {
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue with Phone")).click();
             page.getByPlaceholder("Phone Number").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Next")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -930,9 +888,17 @@ public class LoginApplications {
             // Quikr
             page.navigate("https://www.quikr.com/login");
             page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Login/Register")).click();
-            page.getByLabel("Enter Mobile Number / Email").type(phoneNumber);
+            page.locator("#newLoginSignUpModal").getByRole(AriaRole.TEXTBOX).click();
+            page.locator("#newLoginSignUpModal").getByRole(AriaRole.TEXTBOX).type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).or(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Login with OTP"))).click();
+            page.locator("div").filter(new Locator.FilterOptions().setHasText(Pattern.compile("^Name$"))).getByRole(AriaRole.TEXTBOX).click();
+            page.locator("div").filter(new Locator.FilterOptions().setHasText(Pattern.compile("^Name$"))).getByRole(AriaRole.TEXTBOX).fill("Satya");
+            page.locator("div").filter(new Locator.FilterOptions().setHasText(Pattern.compile("^Email Address$"))).getByRole(AriaRole.TEXTBOX).click();
+            String email = "Satya" + new Random().nextDouble() * 100000000 + "@gmai.com";
+            page.locator("div").filter(new Locator.FilterOptions().setHasText(Pattern.compile("^Email Address$"))).getByRole(AriaRole.TEXTBOX).fill(email);
+            page.locator("input[type=\"password\"]").click();
+            page.locator("input[type=\"password\"]").fill("Test@12345");
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -944,9 +910,8 @@ public class LoginApplications {
             // Telegram
             page.navigate("https://web.telegram.org");
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Log in by phone number")).click();
-            page.getByLabel("Your phone number").type(phoneNumber);
+            page.getByLabel("Your phone number").type("91 " + phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Next")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -959,7 +924,6 @@ public class LoginApplications {
             page.navigate("https://x.com/i/flow/login");
             page.getByText("Phone, email, or username").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Next")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -971,9 +935,8 @@ public class LoginApplications {
             // Reddit
             page.navigate("https://www.reddit.com/login");
             page.getByText("Continue with Phone Number").click();
-            page.getByLabel("Phone Number").type(phoneNumber);
+            page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Phone number")).type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -987,7 +950,6 @@ public class LoginApplications {
             page.getByText("Continue with phone number").click();
             page.getByPlaceholder("Phone number or email").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1000,7 +962,6 @@ public class LoginApplications {
             page.navigate("https://accounts.spotify.com/en/v2/login/phone");
             page.locator("input[type='tel'][name='phoneNumber']").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1013,7 +974,6 @@ public class LoginApplications {
             page.navigate("https://www.netflix.com/login");
             page.getByLabel("Email or mobile number").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1026,7 +986,6 @@ public class LoginApplications {
             page.navigate("https://www.hotstar.com/in/login");
             page.getByLabel("Enter mobile number").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Get OTP")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1037,9 +996,8 @@ public class LoginApplications {
         try {
             // SonyLIV
             page.navigate("https://www.sonyliv.com/signin");
-            page.getByLabel("Enter your Mobile Number").type(phoneNumber);
+            page.getByRole(AriaRole.TEXTBOX).type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Next")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1051,9 +1009,8 @@ public class LoginApplications {
             // Zee5
             page.navigate("https://www.zee5.com/register");
             page.getByPlaceholder("Enter email or mobile number").type(phoneNumber);
-            page.getByRole(AriaRole.CHECKBOX).click();
+            page.locator("label").filter(new Locator.FilterOptions().setHasText("By proceeding you agree to")).locator("span").first().click();
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Create account")).click();
-            page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1064,13 +1021,1170 @@ public class LoginApplications {
         try {
             // Zoom
             page.navigate("https://zoom.us/signin");
-            page.getByLabel("Email or phone number").type(phoneNumber);
+            page.getByTestId("account-ipt").getByLabel("").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Next")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from AngelOne {string}")
+    public void angelOne(String phoneNumber) {
+        try {
+            page.navigate("https://www.angelone.in/login");
+            page.getByPlaceholder("Mobile Number").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("PROCEED")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from CoinSwitch {string}")
+    public void coinSwitch(String phoneNumber) {
+        try {
+            page.navigate("https://coinswitch.co");
+            Page page2 = page.waitForPopup(() -> {
+                page.getByText("Sign Up").first().click();
+            });
+            page2.getByPlaceholder("Enter your mobile number").click();
+            page2.getByPlaceholder("Enter your mobile number").type(phoneNumber);
+            page2.locator("[data-test-id=\"signup-get-otp-btn\"]").click();
+            page2.getByRole(AriaRole.CHECKBOX).first().click();
+            page2.getByRole(AriaRole.CHECKBOX).nth(1).click();
+            page2.locator("[data-test-id=\"tos-consent-button\"]").click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Niyo {string}")
+    public void niyo(String phoneNumber) {
+        try {
+            page.navigate("https://www.goniyo.com");
+            page.locator("img[alt='Profile']").hover();
+            page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Log In/Sign Up")).click();
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from IndMoney {string}")
+    public void indMoney(String phoneNumber) {
+        try {
+            page.navigate("https://indmoney.com/login");
+            page.getByPlaceholder("Enter 10 digits mobile number").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign up / Login")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Smallcase {string}")
+    public void smallcase(String phoneNumber) {
+        try {
+            page.navigate("https://www.smallcase.com/");
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Login")).click();
+            page.getByPlaceholder("Your phone number").type(phoneNumber);
+            page.getByTestId("test-login-get-otp-cta").click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Freo {string}")
+    public void freo(String phoneNumber) {
+        try {
+            page.navigate("https://freo.money/contact-us/");
+            page.locator("input[name='name']").type("Satya");
+            String email = "Satya@gmail.com";
+            page.locator("input[name='email']").type(email);
+            page.getByPlaceholder(" ").type(phoneNumber);
+            page.locator("textarea[name='Message']").type("Last Transaction");
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Submit")).click();
             page.waitForTimeout(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        page.waitForTimeout(5000);
+    }
+
+    @Given("OTP from MobiKwik {string}")
+    public void mobiKwik(String phoneNumber) {
+        try {
+            page.navigate("https://www.mobikwik.com/");
+            page.locator("header").getByText("Signup").click();
+            page.getByLabel("Enter Mobile number").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from LazyPay {string}")
+    public void lazyPay(String phoneNumber) {
+        try {
+            page.navigate("https://lazypay.in/");
+            page.getByTestId("signup-login-btn").click();
+            page.getByTestId("input-tag").type(phoneNumber);
+            page.getByTestId("proceed-button").click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from KreditBee {string}")
+    public void kreditBee(String phoneNumber) {
+        try {
+            page.navigate("https://www.kreditbee.in/signin");
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Login/Signup with Mobile")).click();
+            page.frameLocator("#iframe-container").getByTestId("input-text").type(phoneNumber);
+            page.frameLocator("#iframe-container").getByRole(AriaRole.BUTTON, new FrameLocator.GetByRoleOptions().setName("Continue")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from MoneyTap {string}")
+    public void moneyTap(String phoneNumber) {
+        try {
+            page.navigate("https://web.moneytap.com/");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Get OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from EarlySalary {string}")
+    public void earlySalary(String phoneNumber) {
+        try {
+            page.navigate("https://portal.fibe.in/SignUp?utm_source=web_organic&utm_medium=home_page");
+            page.locator("#mobileNumber").type(phoneNumber);
+            page.locator("label div").click();
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Get OTP")).click();
+            page.waitForTimeout(3000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Swiggy {string}")
+    public void swiggy(String phoneNumber) {
+        try {
+            page.navigate("https://www.swiggy.com/restaurants");
+            page.getByText("Sign In").click();
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.locator("a").filter(new Locator.FilterOptions().setHasText("Login")).click();
+            page.getByLabel("Name").fill("Satya");
+            page.getByLabel("Email").fill("Satya@gmail.com");
+            page.getByText("CONTINUE").click();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from EatSure {string}")
+    public void eatSure(String phoneNumber) {
+        try {
+            page.navigate("https://www.eatsure.com/login");
+            page.getByPlaceholder("Enter Phone Number").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
+            page.getByPlaceholder("What should we call you?").type("Satya");
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign Up")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Country Delight {string}")
+    public void countryDelight(String phoneNumber) {
+        try {
+            page.navigate("https://countrydelight.in/");
+            page.locator("div").filter(new Locator.FilterOptions().setHasText(Pattern.compile("^Free MembershipOn your signup SCAN TO DOWNLOADSend Link$"))).first().click();
+            page.getByRole(AriaRole.NAVIGATION).getByPlaceholder("Enter Your  Number").type(phoneNumber);
+            page.getByRole(AriaRole.NAVIGATION).getByRole(AriaRole.BUTTON, new Locator.GetByRoleOptions().setName("Send Link")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Licious {string}")
+    public void licious(String phoneNumber) {
+        try {
+            page.navigate("https://www.licious.in/login");
+            page.getByText("Login", new Page.GetByTextOptions().setExact(true)).click();
+            page.getByPlaceholder("Enter Mobile Number").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Get OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from FreshToHome {string}")
+    public void freshToHome(String phoneNumber) {
+        try {
+            page.navigate("https://www.freshtohome.com/customer/account/login/");
+            page.getByPlaceholder("Search your city or pincode...").fill("500060");
+            page.getByPlaceholder("Search your city or pincode...").press("Enter");
+            page.reload();
+            page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Create an Account")).click();
+            page.locator("#youama-phone").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from AbhiBus {string}")
+    public void abhiBus(String phoneNumber) {
+        try {
+            page.navigate("https://www.abhibus.com/login");
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Login / Register")).click();
+            page.getByPlaceholder("Enter your mobile number").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Login/Signup with OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Cleartrip {string}")
+    public void cleartrip(String phoneNumber) {
+        try {
+            page.navigate("https://www.cleartrip.com");
+            page.getByPlaceholder("Enter mobile number").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Get OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from EaseMyTrip {string}")
+    public void easeMyTrip(String phoneNumber) {
+        try {
+            page.navigate("https://www.easemytrip.com/");
+            page.locator("a").filter(new Locator.FilterOptions().setHasText("Login or Signup")).click();
+            page.locator("a").filter(new Locator.FilterOptions().setHasText("Customer Login Login & check")).click();
+            page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Email ID or Mobile Number")).type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from ixigo {string}")
+    public void ixigo(String phoneNumber) {
+        try {
+            page.navigate("https://www.ixigo.com/login");
+            page.locator("input[type='text']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("LOGIN")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from RailYatri {string}")
+    public void railYatri(String phoneNumber) {
+        try {
+            page.navigate("https://www.railyatri.in");
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Login")).click();
+            page.getByPlaceholder("Enter your mobile number").type(phoneNumber);
+            page.getByLabel("Start Login").click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from IndiGo {string}")
+    public void indigo(String phoneNumber) {
+        try {
+            page.navigate("https://www.goindigo.in");
+            page.getByText(" Login", new Page.GetByTextOptions().setExact(true)).click();
+            page.getByText("Customer", new Page.GetByTextOptions().setExact(true)).nth(1).click();
+            page.locator("form").getByPlaceholder("Enter Mobile No. / Email Id").fill(phoneNumber);
+            page.locator("form").getByLabel("Continue").click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from SpiceJet {string}")
+    public void spiceJet(String phoneNumber) {
+        try {
+            page.navigate("https://spiceclub.spicejet.com/signup");
+            page.getByRole(AriaRole.COMBOBOX).first().selectOption("MR");
+            page.locator("#first_name").fill("Satya");
+            page.locator("#last_name").fill("Truth");
+            page.locator("#dobDate").click();
+            page.getByLabel("Choose Thursday, May 1st,").click();
+            page.locator("#email_id").fill("Saty123@gmail.com");
+            page.getByPlaceholder("+91 01234").fill("91" + phoneNumber);
+            page.locator("#new-password").fill("Satya@123");
+            page.locator("#c-password").fill("Satya@123");
+            page.getByLabel("I agree to the Terms &").check();
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Submit")).click();
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Submit")).click();
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Submit")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from AirAsia {string}")
+    public void airAsia(String phoneNumber) {
+        try {
+            page.navigate("https://www.airasia.com/en/gb");
+            page.getByText("Log in/Sign up").click();
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Log in with Mobile number")).click();
+            page.getByRole(AriaRole.TOOLTIP, new Page.GetByRoleOptions().setName("Mobile phone")).click();
+            page.getByLabel("Mobile phone").fill(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Log in").setExact(true)).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Treebo {string}")
+    public void treebo(String phoneNumber) {
+        try {
+            page.navigate("https://www.treebo.com/login/");
+            page.locator("#change-mobile-number").getByPlaceholder("Enter Mobile Number / Email ID").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from FabHotels {string}")
+    public void fabHotels(String phoneNumber) {
+        try {
+            page.navigate("https://www.fabhotels.com/login");
+            page.getByPlaceholder("Enter Mobile Number", new Page.GetByPlaceholderOptions().setExact(true)).type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("CONTINUE").setExact(true)).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from StayVista {string}")
+    public void stayVista(String phoneNumber) {
+        try {
+            page.navigate("https://www.stayvista.com/");
+            page.locator("[data-test-id='user-icon']").click();
+            page.getByLabel("Phone number *").fill(phoneNumber);
+            page.locator("[data-test-id='continue-cta']").click();
+            page.getByLabel("First Name *").fill("Satya");
+            page.getByLabel("Last Name *").fill("Truth");
+            page.getByLabel("Email Id *").fill("Satya1234@gamil.com");
+            page.getByLabel("Gender *").click();
+            page.getByRole(AriaRole.OPTION, new Page.GetByRoleOptions().setName("Male").setExact(true)).click();
+            page.getByLabel("Residential City *").click();
+            page.getByRole(AriaRole.OPTION, new Page.GetByRoleOptions().setName("Achalpur")).click();
+            page.locator("[data-test-id=\"signup-continue-cta\"]").click();
+            page.getByLabel("I'll do it later").click();
+            page.getByRole(AriaRole.IMG, new Page.GetByRoleOptions().setName("close")).click();
+            page.locator("[data-test-id=\"user-icon\"]").click();
+            page.getByRole(AriaRole.IMG, new Page.GetByRoleOptions().setName("close")).click();
+            page.locator("#C_arrow_btns").getByRole(AriaRole.IMG).nth(1).click();
+            page.locator("#C_arrow_btns div").first().click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from PharmEasy {string}")
+    public void pharmEasy(String phoneNumber) {
+        try {
+            page.navigate("https://pharmeasy.in/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Netmeds {string}")
+    public void netmeds(String phoneNumber) {
+        try {
+            page.navigate("https://www.netmeds.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Tata1mg {string}")
+    public void tata1mg(String phoneNumber) {
+        try {
+            page.navigate("https://www.1mg.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Apollo247 {string}")
+    public void apollo247(String phoneNumber) {
+        try {
+            page.navigate("https://www.apollo247.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Practo {string}")
+    public void practo(String phoneNumber) {
+        try {
+            page.navigate("https://www.practo.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from HealthifyMe {string}")
+    public void healthifyMe(String phoneNumber) {
+        try {
+            page.navigate("https://www.healthifyme.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from CultFit {string}")
+    public void cultFit(String phoneNumber) {
+        try {
+            page.navigate("https://www.cult.fit/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from MFine {string}")
+    public void mfine(String phoneNumber) {
+        try {
+            page.navigate("https://www.mfine.co/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Portea {string}")
+    public void portea(String phoneNumber) {
+        try {
+            page.navigate("https://www.portea.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Bajaj Health {string}")
+    public void bajajHealth(String phoneNumber) {
+        try {
+            page.navigate("https://www.bajajfinservhealth.in/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Byju {string}")
+    public void byju(String phoneNumber) {
+        try {
+            page.navigate("https://byjus.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Unacademy {string}")
+    public void unacademy(String phoneNumber) {
+        try {
+            page.navigate("https://unacademy.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Vedantu {string}")
+    public void vedantu(String phoneNumber) {
+        try {
+            page.navigate("https://www.vedantu.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from upGrad {string}")
+    public void upGrad(String phoneNumber) {
+        try {
+            page.navigate("https://www.upgrad.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Testbook {string}")
+    public void testbook(String phoneNumber) {
+        try {
+            page.navigate("https://testbook.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from PW {string}")
+    public void pw(String phoneNumber) {
+        try {
+            page.navigate("https://www.pw.live/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Doubtnut {string}")
+    public void doubtnut(String phoneNumber) {
+        try {
+            page.navigate("https://www.doubtnut.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Meritnation {string}")
+    public void meritnation(String phoneNumber) {
+        try {
+            page.navigate("https://www.meritnation.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from TopperLearning {string}")
+    public void topperLearning(String phoneNumber) {
+        try {
+            page.navigate("https://www.topperlearning.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Embibe {string}")
+    public void embibe(String phoneNumber) {
+        try {
+            page.navigate("https://www.embibe.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Simplilearn {string}")
+    public void simplilearn(String phoneNumber) {
+        try {
+            page.navigate("https://www.simplilearn.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from GreatLearning {string}")
+    public void greatLearning(String phoneNumber) {
+        try {
+            page.navigate("https://www.greatlearning.in/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Sharechat {string}")
+    public void sharechat(String phoneNumber) {
+        try {
+            page.navigate("https://sharechat.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Moj {string}")
+    public void moj(String phoneNumber) {
+        try {
+            page.navigate("https://moj.tv/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Josh {string}")
+    public void josh(String phoneNumber) {
+        try {
+            page.navigate("https://www.josh.app/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Koo {string}")
+    public void koo(String phoneNumber) {
+        try {
+            page.navigate("https://www.kooapp.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Truecaller {string}")
+    public void truecaller(String phoneNumber) {
+        try {
+            page.navigate("https://www.truecaller.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Discord {string}")
+    public void discord(String phoneNumber) {
+        try {
+            page.navigate("https://discord.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from JioCinema {string}")
+    public void jioCinema(String phoneNumber) {
+        try {
+            page.navigate("https://www.jiocinema.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from MXPlayer {string}")
+    public void mxPlayer(String phoneNumber) {
+        try {
+            page.navigate("https://www.mxplayer.in/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from AltBalaji {string}")
+    public void altBalaji(String phoneNumber) {
+        try {
+            page.navigate("https://www.altbalaji.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Voot {string}")
+    public void voot(String phoneNumber) {
+        try {
+            page.navigate("https://www.voot.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Aha {string}")
+    public void aha(String phoneNumber) {
+        try {
+            page.navigate("https://www.ahavideo.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from SunNXT {string}")
+    public void sunNXT(String phoneNumber) {
+        try {
+            page.navigate("https://www.sunnxt.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Hungama {string}")
+    public void hungama(String phoneNumber) {
+        try {
+            page.navigate("https://www.hungama.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Gaana {string}")
+    public void gaana(String phoneNumber) {
+        try {
+            page.navigate("https://gaana.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from JioSaavn {string}")
+    public void jioSaavn(String phoneNumber) {
+        try {
+            page.navigate("https://www.jiosaavn.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Wynk {string}")
+    public void wynk(String phoneNumber) {
+        try {
+            page.navigate("https://wynk.in/music/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Airtel Xstream {string}")
+    public void airtelXstream(String phoneNumber) {
+        try {
+            page.navigate("https://www.airtelxstream.in/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Naukri {string}")
+    public void naukri(String phoneNumber) {
+        try {
+            page.navigate("https://www.naukri.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Apna {string}")
+    public void apna(String phoneNumber) {
+        try {
+            page.navigate("https://apna.co/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Internshala {string}")
+    public void internshala(String phoneNumber) {
+        try {
+            page.navigate("https://internshala.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from WorkIndia {string}")
+    public void workIndia(String phoneNumber) {
+        try {
+            page.navigate("https://www.workindia.in/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Shine {string}")
+    public void shine(String phoneNumber) {
+        try {
+            page.navigate("https://www.shine.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Hirist {string}")
+    public void hirist(String phoneNumber) {
+        try {
+            page.navigate("https://www.hirist.tech/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Instahyre {string}")
+    public void instahyre(String phoneNumber) {
+        try {
+            page.navigate("https://www.instahyre.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Cutshort {string}")
+    public void cutshort(String phoneNumber) {
+        try {
+            page.navigate("https://cutshort.io/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from iimjobs {string}")
+    public void iimjobs(String phoneNumber) {
+        try {
+            page.navigate("https://www.iimjobs.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Foundit {string}")
+    public void foundit(String phoneNumber) {
+        try {
+            page.navigate("https://www.foundit.in/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from MagicBricks {string}")
+    public void magicBricks(String phoneNumber) {
+        try {
+            page.navigate("https://www.magicbricks.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Housing {string}")
+    public void housing(String phoneNumber) {
+        try {
+            page.navigate("https://housing.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Sulekha {string}")
+    public void sulekha(String phoneNumber) {
+        try {
+            page.navigate("https://www.sulekha.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from JustDial {string}")
+    public void justDial(String phoneNumber) {
+        try {
+            page.navigate("https://www.justdial.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from UrbanClap {string}")
+    public void urbanClap(String phoneNumber) {
+        try {
+            page.navigate("https://www.urbancompany.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Housejoy {string}")
+    public void housejoy(String phoneNumber) {
+        try {
+            page.navigate("https://www.housejoy.in/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Given("OTP from Dream11 {string}")
+    public void dream11(String phoneNumber) {
+        try {
+            page.navigate("https://www.dream11.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Get OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from MPL {string}")
+    public void mpl(String phoneNumber) {
+        try {
+            page.navigate("https://www.mpl.live/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Winzo {string}")
+    public void winzo(String phoneNumber) {
+        try {
+            page.navigate("https://www.winzogames.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from MyTeam11 {string}")
+    public void myTeam11(String phoneNumber) {
+        try {
+            page.navigate("https://www.myteam11.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from RummyCircle {string}")
+    public void rummyCircle(String phoneNumber) {
+        try {
+            page.navigate("https://www.rummycircle.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Adda52 {string}")
+    public void adda52(String phoneNumber) {
+        try {
+            page.navigate("https://www.adda52.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Jio {string}")
+    public void jio(String phoneNumber) {
+        try {
+            page.navigate("https://www.jio.com/selfcare/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Airtel {string}")
+    public void airtel(String phoneNumber) {
+        try {
+            page.navigate("https://www.airtel.in/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from VodafoneIdea {string}")
+    public void vodafoneIdea(String phoneNumber) {
+        try {
+            page.navigate("https://www.myvi.in/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from TataPlay {string}")
+    public void tataPlay(String phoneNumber) {
+        try {
+            page.navigate("https://www.tataplay.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from DishTV {string}")
+    public void dishTV(String phoneNumber) {
+        try {
+            page.navigate("https://www.dishtv.in/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from d2h {string}")
+    public void d2h(String phoneNumber) {
+        try {
+            page.navigate("https://www.d2h.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Given("OTP from Delhivery {string}")
+    public void delhivery(String phoneNumber) {
+        try {
+            page.navigate("https://www.delhivery.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Shiprocket {string}")
+    public void shiprocket(String phoneNumber) {
+        try {
+            page.navigate("https://app.shiprocket.in/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Shadowfax {string}")
+    public void shadowfax(String phoneNumber) {
+        try {
+            page.navigate("https://www.shadowfax.in/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Porter {string}")
+    public void porter(String phoneNumber) {
+        try {
+            page.navigate("https://porter.in/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Given("OTP from Lalamove {string}")
+    public void lalamove(String phoneNumber) {
+        try {
+            page.navigate("https://www.lalamove.com/login");
+            page.locator("input[type='tel']").type(phoneNumber);
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send OTP")).click();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

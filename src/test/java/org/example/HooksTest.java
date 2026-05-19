@@ -36,9 +36,9 @@ public class HooksTest {
     @Before
     public void cucumberBeforeHook(Scenario scenario) {
         System.out.println("Cucumber before run...");
-//        initiateBrowsers();
+        initiateBrowsers();
         TestInfo testInfo = null;
-        setUp(testInfo);
+//        setUp(testInfo);
     }
 
     public static void initiateBrowsers() {
@@ -50,8 +50,8 @@ public class HooksTest {
             );
             BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions();
             launchOptions.setHeadless(false);
-            launchOptions.setSlowMo(100);
-//            launchOptions.setChannel("chrome");
+            launchOptions.setSlowMo(200);
+            launchOptions.setChannel("chrome");
             playwright.set(Playwright.create());
             browser.set(
                     playwright.get()
@@ -65,10 +65,11 @@ public class HooksTest {
 
             Browser.NewContextOptions contextOptions = new Browser.NewContextOptions();
             contextOptions.setExtraHTTPHeaders(headers);
-            contextOptions.setViewportSize(null);
+            contextOptions.setViewportSize(1920,1080);
 //            contextOptions.setStorageStatePath(Paths.get("insta_state.json"));
             contextOptions.setStorageStatePath(Paths.get("naukri_cookies.json"));
 //            contextOptions.setStorageStatePath(Paths.get("linkedin_cookies.json"));
+
             context.set(
                     browser.get().newContext(contextOptions)
             );
@@ -153,6 +154,7 @@ public class HooksTest {
     @After
     public void afterExecuteHook(Scenario scenario) {
         try {
+//            page.get().waitForTimeout(5000);
             System.out.println(
                     "Closing Thread -> "
                             + Thread.currentThread().getName()
