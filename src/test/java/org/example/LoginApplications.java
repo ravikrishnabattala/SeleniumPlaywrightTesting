@@ -413,7 +413,7 @@ public class LoginApplications {
     public void ShoppersStop(String phoneNumber) {
         try {
             //ShoppersStop
-            page.navigate("https://www.shoppersstop.com");
+            page.navigate("https://www.shoppersstop.com/houseofexclusives", new Page.NavigateOptions().setTimeout(60000));
             page.locator("[id='radix-:Rlll6d6:'] > svg").first().click();
             page.getByPlaceholder("Enter your Mobile Number").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
@@ -484,7 +484,7 @@ public class LoginApplications {
     public void Clovia(String phoneNumber) {
         try {
             //Clovia
-            page.navigate("https://www.clovia.com/panties/gimme-5/s/");
+            page.navigate("https://www.clovia.com/panties/gimme-5/s/", new Page.NavigateOptions().setTimeout(60000));
             page.locator("li").and(page.locator(".rftLi.profileHover")).hover();
 //            page.locator("li:nth-child(14) > .fa").click();
             page.getByText("Signup").click();
@@ -601,7 +601,7 @@ public class LoginApplications {
     public void Decathlon(String phoneNumber) {
         try {
             // Decathlon
-            page.navigate("https://www.decathlon.in/login");
+            page.navigate("https://www.decathlon.in/login", new Page.NavigateOptions().setTimeout(60000));
             page.locator("[data-test-id='header-desktop-Sign In\\:link']").click();
             page.getByLabel("Phone number").click();
             page.getByPlaceholder("Mobile phone number").click();
@@ -640,7 +640,7 @@ public class LoginApplications {
     public void UrbanLadder(String phoneNumber) {
         try {
             //UrbanLadder
-            page.navigate("https://www.urbanladder.com/login");
+            page.navigate("https://www.urbanladder.com/login", new Page.NavigateOptions().setTimeout(60000));
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Open account menu")).click();
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign In")).click();
             page.getByPlaceholder("Enter 10-digit Mobile Number").type(phoneNumber);
@@ -830,8 +830,7 @@ public class LoginApplications {
     public void UrbanCompany(String phoneNumber) {
         try {
             // UrbanCompany
-//            page.navigate("https://www.urbancompany.com/login");
-            page.navigate("https://www.urbancompany.com");
+            page.navigate("https://www.urbancompany.com", new Page.NavigateOptions().setTimeout(60000));
             Locator p = page.locator("#rightButtonStack").getByRole(AriaRole.BUTTON, new Locator.GetByRoleOptions().setName("Button Double Tap to perform")).nth(1);
             p.click();
             p.click();
@@ -873,7 +872,7 @@ public class LoginApplications {
     public void OLX(String phoneNumber) {
         try {
             // OLX
-            page.navigate("https://www.olx.in/account");
+            page.navigate("https://www.olx.in/account", new Page.NavigateOptions().setTimeout(60000));
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue with Phone")).click();
             page.getByPlaceholder("Phone Number").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Next")).click();
@@ -921,9 +920,13 @@ public class LoginApplications {
     public void Twitter(String phoneNumber) {
         try {
             // Twitter/X
-            page.navigate("https://x.com/i/flow/login");
-            page.getByText("Phone, email, or username").type(phoneNumber);
-            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Next")).click();
+            page.navigate("https://x.com/i/jf/onboarding/web#/s/signup_phone");
+            page.getByText("Continue with phone").first().click();
+            page.getByLabel("Phone number").fill(phoneNumber);
+            page.getByLabel("c").click();
+            page.getByLabel("Search countries").fill("India");
+            page.getByText("India").click();
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue").setExact(true)).click();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1062,7 +1065,7 @@ public class LoginApplications {
     @Given("OTP from Niyo {string}")
     public void niyo(String phoneNumber) {
         try {
-            page.navigate("https://www.goniyo.com");
+            page.navigate("https://www.goniyo.com", new Page.NavigateOptions().setTimeout(60000));
             page.locator("img[alt='Profile']").hover();
             page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Log In/Sign Up")).click();
             page.locator("input[type='tel']").type(phoneNumber);
@@ -1301,10 +1304,10 @@ public class LoginApplications {
     @Given("OTP from IndiGo {string}")
     public void indigo(String phoneNumber) {
         try {
-            page.navigate("https://www.goindigo.in");
-            page.getByText(" Login", new Page.GetByTextOptions().setExact(true)).click();
+            page.navigate("https://www.goindigo.in", new Page.NavigateOptions().setTimeout(60000));
+            page.getByText("Login", new Page.GetByTextOptions().setExact(true)).click();
             page.getByText("Customer", new Page.GetByTextOptions().setExact(true)).nth(1).click();
-            page.locator("form").getByPlaceholder("Enter Mobile No. / Email Id").fill(phoneNumber);
+            page.locator("#input-userInput").fill(phoneNumber);
             page.locator("form").getByLabel("Continue").click();
         } catch (Exception e) {
             e.printStackTrace();
@@ -1351,6 +1354,7 @@ public class LoginApplications {
     public void treebo(String phoneNumber) {
         try {
             page.navigate("https://www.treebo.com/login/");
+            page.getByText("close").click();
             page.locator("#change-mobile-number").getByPlaceholder("Enter Mobile Number / Email ID").type(phoneNumber);
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue")).click();
         } catch (Exception e) {
@@ -1682,7 +1686,7 @@ public class LoginApplications {
     public void hungama(String phoneNumber) {
         try {
             page.navigate("https://www.hungama.com");
-            page.locator(".profile-box.cursor-pointer.hide-sec").click();
+            page.locator("header").locator(".profile-box.cursor-pointer.hide-sec").click();
             page.getByText("Login with Mobile Number").click();
             page.locator("form").getByPlaceholder("Enter Mobile no.").type(phoneNumber);
             page.getByText("Send OTP").click();
